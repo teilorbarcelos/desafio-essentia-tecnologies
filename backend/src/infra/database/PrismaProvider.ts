@@ -2,14 +2,27 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { CONFIG } from '../../shared/config/env.js';
 
-const url = new URL(CONFIG.DATABASE_URL);
+export class PrismaProvider {
+  private static instance: PrismaClient;
 
-const adapter = new PrismaMariaDb({
-  host: url.hostname,
-  port: Number(url.port),
-  user: url.username,
-  password: url.password,
-  database: url.pathname.replace('/', ''),
-});
+  private constructor() {}
 
-export const prisma = new PrismaClient({ adapter });
+  static getInstance(): PrismaClient {
+    if (!this.instance) {
+      const url = new URL(CONFIG.DATABASE_URL);
+      const adapter = new PrismaMariaDb({
+        host: url.hostname,
+        port: Number(url.port),
+        user: url.username,
+        password: url.password,
+        database: url.pathname.replace('/', ''),
+      });
+
+      this.instance = new PrismaClient({ adapter });
+    }
+
+    return this.instance;
+  }
+}
+
+export const prisma = PrismaProvider.getInstance();

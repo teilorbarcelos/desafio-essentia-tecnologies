@@ -1,11 +1,11 @@
 services:
   db:
     image: mysql:8.0
-    container_name: techx_mysql_dev
+    container_name: essentia_mysql_dev
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: techx_todo
+      MYSQL_DATABASE: essentia_todo
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
@@ -15,7 +15,7 @@ services:
 
   nosql:
     image: mongo:6.0
-    container_name: techx_mongo_dev
+    container_name: essentia_mongo_dev
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -27,7 +27,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: techx_redis_dev
+    container_name: essentia_redis_dev
     restart: always
     ports:
       - "6379:6379"
@@ -38,7 +38,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: techx_backend_dev
+    container_name: essentia_backend_dev
     restart: on-failure
     ports:
       - "8888:8888"
@@ -48,8 +48,8 @@ services:
       - redis
     environment:
       - PORT=8888
-      - DATABASE_URL=mysql://user:password@db:3306/techx_todo
-      - MONGO_URL=mongodb://admin:password@nosql:27017/techx_todo?authSource=admin
+      - DATABASE_URL=mysql://user:password@db:3306/essentia_todo
+      - MONGO_URL=mongodb://admin:password@nosql:27017/essentia_todo?authSource=admin
       - REDIS_URL=redis://redis:6379
 
 volumes:

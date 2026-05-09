@@ -11,3 +11,8 @@
 - [x] Install and configure Prisma 7
 - [x] Define `User` and `Task` models in `schema.prisma`
 - [x] Run initial migration `init`
+- [x] Install ESLint and TypeScript dependencies
+- [x] Create `eslint.config.mjs` with strict rules and custom comment rule
+- [x] Update `package.json` with lint scripts
+- [x] Verify rules catch `any` and `//` in source files
+- [x] Verify rules allow `any` in test files in `schema.prisma`

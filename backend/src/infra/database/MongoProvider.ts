@@ -1,4 +1,4 @@
-import { MongoClient, Db } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 import { CONFIG } from '../../shared/config/env.js';
 
 class MongoProvider {
@@ -14,7 +14,7 @@ class MongoProvider {
 
     try {
       await this.client.connect();
-      this.db = this.client.db(); // Usa o banco padrão definido na connection string
+      this.db = this.client.db();
       console.log('[mongodb]: Connected successfully');
       return this.db;
     } catch (err) {

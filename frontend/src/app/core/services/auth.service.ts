@@ -28,11 +28,16 @@ export class AuthService {
   private hydrate() {
     const savedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
+    console.log('[AuthService] Hydrating from localStorage...', { hasUser: !!savedUser, hasToken: !!token });
+    
     if (savedUser && token) {
       try {
-        this.userState.set(JSON.parse(savedUser));
+        const user = JSON.parse(savedUser);
+        console.log('[AuthService] Hydrated user:', user.email);
+        this.userState.set(user);
         this.loadingState.set(false);
-      } catch {
+      } catch (e) {
+        console.error('[AuthService] Hydrate error:', e);
         this.logout();
       }
     } else {
@@ -41,6 +46,7 @@ export class AuthService {
   }
 
   async checkAuth() {
+    console.log('[AuthService] checkAuth triggered');
     this.loadingState.set(true);
     const token = localStorage.getItem('token');
 
@@ -60,15 +66,18 @@ export class AuthService {
   }
 
   login(token: string, refreshToken: string, user: User) {
+    console.log('[AuthService] Login method called for:', user.email);
     this.setSession(token, refreshToken, user);
   }
 
   private setSession(token: string, refreshToken: string, user: User) {
+    console.log('[AuthService] Setting session in localStorage and updating signal...');
     localStorage.setItem('token', token);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('user', JSON.stringify(user));
     this.userState.set(user);
     this.loadingState.set(false);
+    console.log('[AuthService] Session set successfully. isAuthenticated:', !!this.userState());
   }
 
   logout() {

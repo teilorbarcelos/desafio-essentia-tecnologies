@@ -1,30 +1,118 @@
 import cors from '@fastify/cors';
-import 'dotenv/config';
+import jwt from '@fastify/jwt';
 import Fastify from 'fastify';
+import { auditHook } from './api/hooks/audit.hook.js';
+import { mongoProvider } from './infra/database/MongoProvider.js';
+import { authRoutes } from './modules/Auth/Auth.routes.js';
+import { taskRoutes } from './modules/Task/Task.routes.js';
+import { CONFIG } from './shared/config/env.js';
 
-const app = Fastify({
-  logger: true
-});
+export function buildApp() {
+  const app = Fastify({
+    logger: process.env.NODE_ENV !== 'test'
+  });
 
-const PORT = Number(process.env.PORT) || 8888;
+  app.register(jwt, {
+    secret: CONFIG.JWT_SECRET
+  });
 
-await app.register(cors, {
-  origin: true
-});
+  app.register(cors, {
+    origin: true
+  });
 
-app.get('/health', async (request, reply) => {
-  return {
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-  };
-});
+  app.register(import('@fastify/swagger'), {
+    openapi: {
+      info: {
+        title: 'techx To-Do List API',
+        description: 'API for managing tasks and user authentication',
+        version: '1.0.0',
+      },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT'
+          }
+        }
+      }
+    }
+  });
 
-try {
-  await app.listen({ port: PORT, host: '0.0.0.0' });
-  console.log(`[server]: Server is running at http://localhost:${PORT}`);
-} catch (err) {
-  app.log.error(err);
-  process.exit(1);
+  app.register(import('@fastify/swagger-ui'), {
+    routePrefix: '/v1/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: false
+    }
+  });
+
+  app.addHook('onResponse', auditHook);
+
+  app.register((v1, _opts, done) => {
+    v1.register(authRoutes, { prefix: '/auth' });
+    v1.register(taskRoutes, { prefix: '/tasks' });
+
+    v1.get('/health', (_request, reply) => {
+      return reply.send({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+      });
+    });
+
+    done();
+  }, { prefix: '/v1' });
+
+  return app;
 }
 
-export default app;
+/* v8 ignore start */
+export async function start() {
+  const app = buildApp();
+  const maxRetries = 10;
+  let retries = 0;
+
+  while (retries < maxRetries) {
+    try {
+      await mongoProvider.connect();
+      
+      const { PrismaProvider } = await import('./infra/database/PrismaProvider.js');
+      const prisma = PrismaProvider.getInstance();
+      await prisma.$connect();
+      
+      console.log('[server]: All databases connected successfully');
+      break;
+    } catch (err) {
+      retries++;
+      console.error(`[server]: Database connection failed (attempt ${String(retries)}/${String(maxRetries)}). Retrying in 3s...`);
+      if (retries >= maxRetries) {
+        console.error('[server]: Max retries reached. Could not connect to databases.');
+        process.exit(1);
+      }
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    }
+  }
+
+  try {
+    const address = await app.listen({ 
+      port: CONFIG.PORT, 
+      host: CONFIG.HOST 
+    });
+    console.log(`[server]: Server is running at ${address}`);
+    console.log('[server]: Available routes:');
+    console.log(app.printRoutes());
+  } catch (err) {
+    app.log.error(err as Error);
+    process.exit(1);
+  }
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  start().catch((err: unknown) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+/* v8 ignore stop */
+
+export default buildApp;

@@ -1,0 +1,18 @@
+- [x] Create `backend` directory in `desafio-techx-tecnologies`
+- [x] Switch from Express to Fastify
+- [x] Configure `tsconfig.json`
+- [x] Create `src/app.ts` with a basic Fastify server
+- [x] Verify the server runs with `npm run dev`
+- [x] Create `docker-compose.yml` in the project root
+- [x] Create `Dockerfile` for the backend
+- [x] Add Docker scripts to `backend/package.json`
+- [x] Create `.env` with DB credentials
+- [x] Verify infrastructure with `docker compose`
+- [x] Install and configure Prisma 7
+- [x] Define `User` and `Task` models in `schema.prisma`
+- [x] Run initial migration `init`
+- [x] Install ESLint and TypeScript dependencies
+- [x] Create `eslint.config.mjs` with strict rules and custom comment rule
+- [x] Update `package.json` with lint scripts
+- [x] Verify rules catch `any` and `//` in source files
+- [x] Verify rules allow `any` in test files in `schema.prisma`

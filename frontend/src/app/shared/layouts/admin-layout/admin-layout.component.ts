@@ -1,15 +1,16 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
-  LucideAngularModule,
-  LogOut,
-  ListTodo,
   CheckCircle,
+  ListTodo,
+  LogOut,
+  LucideAngularModule,
   User as UserIcon,
 } from 'lucide-angular';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../features/auth/auth.service';
 import { ButtonComponent } from '../../components/button/button.component';
+import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-admin-layout',
@@ -19,15 +20,18 @@ import { ButtonComponent } from '../../components/button/button.component';
     RouterModule,
     LucideAngularModule,
     ButtonComponent,
+    ToastContainerComponent,
   ],
   template: `
     <div class="flex h-screen w-full bg-gray-50 font-sans antialiased text-gray-900">
+      <app-toast-container></app-toast-container>
+      
       <!-- Sidebar -->
       <aside class="w-64 bg-white border-r border-gray-200 flex flex-col overflow-y-auto shadow-sm">
         <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0 lg:hidden">
           <div class="flex items-center space-x-2 text-indigo-600">
             <lucide-angular [img]="LogoIcon" class="w-6 h-6"></lucide-angular>
-            <span class="text-xl font-bold tracking-tight text-gray-900">TechX Todo</span>
+            <span class="text-xl font-bold tracking-tight text-gray-900">TechX To-do</span>
           </div>
         </div>
         
@@ -52,7 +56,7 @@ import { ButtonComponent } from '../../components/button/button.component';
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
           <div class="flex items-center space-x-2 text-indigo-600">
             <lucide-angular [img]="LogoIcon" class="w-6 h-6"></lucide-angular>
-            <span class="text-xl font-bold tracking-tight text-gray-900">TechX Todo</span>
+            <span class="text-xl font-bold tracking-tight text-gray-900">TechX To-do</span>
           </div>
           
           <div class="flex items-center space-x-2">
@@ -71,7 +75,6 @@ import { ButtonComponent } from '../../components/button/button.component';
               variant="ghost"
               size="sm"
               (btnClick)="handleLogout()"
-              className="text-gray-500 hover:text-red-600 hover:bg-red-50"
               title="Sair"
             >
               <lucide-angular [img]="LogOutIcon" class="w-5 h-5 mr-2"></lucide-angular>
@@ -97,7 +100,7 @@ export class AdminLayoutComponent {
   readonly UserIcon = UserIcon;
 
   navItems = [
-    { name: 'Minhas Tarefas', path: '/dashboard', icon: ListTodo },
+    { name: 'Minhas Tarefas', path: '/tasks', icon: ListTodo },
   ];
 
   goToProfile() {

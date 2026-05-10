@@ -1,18 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  ReactiveFormsModule, 
-  Validators 
-} from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, inject, signal } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { AuthService, User } from '../../core/services/auth.service';
+import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { AuthService, User } from './auth.service';
 
 interface LoginResponse {
   token: string;
@@ -29,7 +29,7 @@ interface LoginResponse {
       <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
         <div class="text-center">
           <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
-            TechX Todo
+            TechX To-do
           </h1>
           <p class="mt-2 text-sm text-gray-600">
             Acesse sua conta para gerenciar suas tarefas

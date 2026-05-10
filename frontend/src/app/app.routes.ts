@@ -14,12 +14,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'tasks',
         pathMatch: 'full',
       },
       {
-        path: 'dashboard',
-        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
+        path: 'tasks',
+        loadChildren: () => import('./features/task/task.routes').then(m => m.TASK_ROUTES),
       },
       {
         path: 'profile',
@@ -29,6 +29,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'dashboard',
+    redirectTo: 'tasks',
   },
 ];

@@ -1,23 +1,28 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, APP_INITIALIZER } from '@angular/core';
-import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { APP_INITIALIZER, ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import {
-  LucideIconProvider,
-  LUCIDE_ICONS,
-  LayoutDashboard,
-  LogOut,
-  User,
   CheckCircle,
+  CircleAlert,
+  CircleCheck,
   Eye,
   EyeOff,
-  ListTodo
+  Info,
+  LUCIDE_ICONS,
+  LayoutDashboard,
+  ListTodo,
+  LogOut,
+  LucideIconProvider,
+  TriangleAlert,
+  User,
+  X
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
 import { apiInterceptor } from './core/interceptors/api.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { AuthService } from './core/services/auth.service';
+import { AuthService } from './features/auth/auth.service';
 
 function initializeApp(authService: AuthService) {
   return () => authService.checkAuth();
@@ -44,7 +49,12 @@ export const appConfig: ApplicationConfig = {
         CheckCircle,
         Eye,
         EyeOff,
-        ListTodo
+        ListTodo,
+        CircleAlert,
+        TriangleAlert,
+        CircleCheck,
+        Info,
+        X
       })
     },
   ]

@@ -1,4 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
+import { CONFIG } from '../../shared/config/env.js';
 
 export const TaskResponseSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -35,7 +36,7 @@ export type TaskParamsDTO = Static<typeof TaskParamsSchema>;
 
 export const PaginationQuerySchema = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
-  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
+  limit: Type.Optional(Type.Number({ minimum: 1, maximum: CONFIG.MAX_PAGE_SIZE, default: 10 })),
 });
 
 export type PaginationQueryDTO = Static<typeof PaginationQuerySchema>;

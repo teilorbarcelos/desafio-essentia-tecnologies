@@ -1,4 +1,5 @@
 import { PrismaProvider } from '../../infra/database/PrismaProvider.js';
+import { CONFIG } from '../../shared/config/env.js';
 
 export interface CreateTaskData {
   title: string;
@@ -21,14 +22,15 @@ export const TaskRepository = {
     });
   },
 
-  async findByUserId(userId: string, page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
+  async findByUserId(userId: string, page = 1, limit = 25) {
+    const safeLimit = Math.min(limit, CONFIG.MAX_PAGE_SIZE);
+    const skip = (page - 1) * safeLimit;
     const [items, total] = await Promise.all([
       prisma.task.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },
         skip,
-        take: limit
+        take: safeLimit
       }),
       prisma.task.count({ where: { userId } })
     ]);

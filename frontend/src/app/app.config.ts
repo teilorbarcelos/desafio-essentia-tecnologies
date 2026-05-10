@@ -18,7 +18,11 @@ import {
   Info,
   X,
   Home,
-  ChevronRight
+  ChevronRight,
+  ChevronLeft,
+  Trash2,
+  Pencil,
+  Check
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -58,7 +62,11 @@ export const appConfig: ApplicationConfig = {
         Info,
         X,
         Home,
-        ChevronRight
+        ChevronRight,
+        ChevronLeft,
+        Trash2,
+        Pencil,
+        Check
       })
     },
   ]

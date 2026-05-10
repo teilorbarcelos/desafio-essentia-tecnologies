@@ -5,12 +5,17 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { ChevronRight, Home, LucideAngularModule } from 'lucide-angular';
 import { filter, map } from 'rxjs';
 
-const routeMap: Record<string, string> = {
-  tasks: 'Minhas Tarefas',
-  profile: 'Perfil',
-  'change-password': 'Alterar Senha',
-  new: 'Nova Tarefa',
-  edit: 'Editar Tarefa',
+interface RouteConfig {
+  label: string;
+  clickable?: boolean;
+}
+
+const routeMap: Record<string, RouteConfig> = {
+  tasks: { label: 'Minhas Tarefas' },
+  profile: { label: 'Perfil', clickable: false },
+  'change-password': { label: 'Alterar Senha' },
+  new: { label: 'Nova Tarefa' },
+  edit: { label: 'Editar Tarefa' },
 };
 
 @Component({
@@ -32,8 +37,13 @@ const routeMap: Record<string, string> = {
         @for (item of breadcrumbs(); track item.to) {
           <li class="flex items-center">
             <lucide-angular [img]="ChevronIcon" class="w-4 h-4 text-gray-400 mx-1 shrink-0"></lucide-angular>
-            @if (item.isLast) {
-              <span class="text-sm font-semibold text-indigo-600 truncate max-w-[200px]">
+            @if (item.isLast || !item.clickable) {
+              <span 
+                class="text-sm truncate max-w-[200px]"
+                [class.font-semibold]="item.isLast"
+                [class.text-indigo-600]="item.isLast"
+                [class.text-gray-400]="!item.isLast && !item.clickable"
+              >
                 {{ item.displayName }}
               </span>
             } @else {
@@ -75,10 +85,12 @@ export class BreadcrumbComponent {
         const isLast = index === pathnames.length - 1 || (index === pathnames.length - 2 && (pathnames[index+1] === 'edit' || !isNaN(Number(pathnames[index+1]))));
         
         const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-        const displayName = routeMap[value] || value.charAt(0).toUpperCase() + value.slice(1);
+        const config = routeMap[value];
+        const displayName = config?.label || value.charAt(0).toUpperCase() + value.slice(1);
+        const clickable = config?.clickable !== false;
 
-        return { to, displayName, isLast };
+        return { to, displayName, isLast, clickable };
       })
-      .filter((x): x is { to: string; displayName: string; isLast: boolean } => !!x);
+      .filter((x): x is { to: string; displayName: string; isLast: boolean; clickable: boolean } => !!x);
   });
 }

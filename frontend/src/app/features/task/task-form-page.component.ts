@@ -3,6 +3,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { createFormPageController } from '../../core/utils/form-page.utils';
+import { MenuService } from '../../core/services/menu.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { TextareaComponent } from '../../shared/components/textarea/textarea.component';
@@ -20,7 +21,7 @@ import { CreateTaskDTO, Task, TaskService } from './task.service';
     TextareaComponent
   ],
   template: `
-    <div class="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-500">
+    <div class="max-w-2xl mx-auto space-y-6">
       <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
         <div class="flex items-center justify-between border-b border-gray-100 pb-6 mb-6">
           <div>
@@ -91,6 +92,7 @@ import { CreateTaskDTO, Task, TaskService } from './task.service';
 export class TaskFormPageComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private taskService = inject(TaskService);
+  private menuService = inject(MenuService);
 
   taskForm: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(1)]],
@@ -117,6 +119,7 @@ export class TaskFormPageComponent implements OnInit, OnDestroy {
   cancel = this.formCtrl.cancel;
 
   ngOnInit() {
+    this.menuService.setActiveFeature('tasks');
     this.formCtrl.init();
   }
 

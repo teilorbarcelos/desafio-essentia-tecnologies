@@ -17,6 +17,13 @@ export interface CreateTaskDTO {
   description?: string;
 }
 
+export interface ListResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  size: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,8 +31,8 @@ export class TaskService {
   private http = inject(HttpClient);
 
   getTasks(page = 1, limit = 25) {
-    return firstValueFrom(this.http.get<Task[]>('/v1/tasks', {
-      params: { page, limit }
+    return firstValueFrom(this.http.get<ListResponse<Task>>('/v1/tasks', {
+      params: { page: page.toString(), limit: limit.toString() }
     }));
   }
 

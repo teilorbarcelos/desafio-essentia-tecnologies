@@ -69,10 +69,38 @@ export function buildApp() {
 /* v8 ignore start */
 export async function start() {
   const app = buildApp();
+  const maxRetries = 10;
+  let retries = 0;
+
+  while (retries < maxRetries) {
+    try {
+      await mongoProvider.connect();
+      
+      const { PrismaProvider } = await import('./infra/database/PrismaProvider.js');
+      const prisma = PrismaProvider.getInstance();
+      await prisma.$connect();
+      
+      console.log('[server]: All databases connected successfully');
+      break;
+    } catch (err) {
+      retries++;
+      console.error(`[server]: Database connection failed (attempt ${String(retries)}/${String(maxRetries)}). Retrying in 3s...`);
+      if (retries >= maxRetries) {
+        console.error('[server]: Max retries reached. Could not connect to databases.');
+        process.exit(1);
+      }
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    }
+  }
+
   try {
-    await mongoProvider.connect();
-    await app.listen({ port: CONFIG.PORT, host: '0.0.0.0' });
-    console.log(`[server]: Server is running at http://localhost:${String(CONFIG.PORT)}`);
+    const address = await app.listen({ 
+      port: CONFIG.PORT, 
+      host: CONFIG.HOST 
+    });
+    console.log(`[server]: Server is running at ${address}`);
+    console.log('[server]: Available routes:');
+    console.log(app.printRoutes());
   } catch (err) {
     app.log.error(err as Error);
     process.exit(1);

@@ -9,7 +9,8 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+RUN npx prisma generate
 
 EXPOSE 8888
 
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/src/app.js"]

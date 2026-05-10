@@ -3,6 +3,7 @@ import { FastifyInstance } from 'fastify';
 import { JWTProvider, AuthPayload } from '../../infra/auth/JWTProvider.js';
 import { SessionManager } from '../../infra/auth/SessionManager.js';
 import { UserRepository } from '../User/User.repository.js';
+import { AuthenticationError, NotFoundError, AppError } from '../../shared/errors/AppError.js';
 
 export class AuthService {
   private jwtProvider: JWTProvider;
@@ -17,7 +18,7 @@ export class AuthService {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new Error('Invalid credentials');
+      throw new AuthenticationError('Invalid credentials');
     }
 
     const payload: AuthPayload = { id: user.id, email: user.email };
@@ -38,7 +39,7 @@ export class AuthService {
   async getMe(userId: string) {
     const user = await this.userRepository.findById(userId);
 
-    if (!user) throw new Error('User not found');
+    if (!user) throw new NotFoundError('User not found');
 
     const userWithoutPassword = {
       id: user.id,
@@ -55,10 +56,10 @@ export class AuthService {
       const payload = await this.jwtProvider.verifyToken(refreshToken);
       const isValid = await SessionManager.validateRefreshSession(payload.id, refreshToken);
 
-      if (!isValid) throw new Error('Invalid refresh token');
+      if (!isValid) throw new AuthenticationError('Invalid refresh token');
 
       const user = await this.userRepository.findById(payload.id);
-      if (!user) throw new Error('User not found');
+      if (!user) throw new NotFoundError('User not found');
 
       const newPayload: AuthPayload = { id: user.id, email: user.email };
       const tokens = await this.jwtProvider.generateTokenPair(newPayload);
@@ -67,17 +68,18 @@ export class AuthService {
       await SessionManager.createSession(user.id, tokens.token, tokens.refreshToken, newPayload);
 
       return tokens;
-    } catch {
-      throw new Error('Unauthorized');
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      throw new AuthenticationError('Unauthorized');
     }
   }
 
   async changePassword(userId: string, currentPass: string, newPass: string) {
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new NotFoundError('User not found');
 
     const isValid = await bcrypt.compare(currentPass, user.password);
-    if (!isValid) throw new Error('Current password incorrect');
+    if (!isValid) throw new AppError('Current password incorrect', 400);
 
     const hashedNewPass = await bcrypt.hash(newPass, 12);
     await this.userRepository.updatePassword(userId, hashedNewPass);

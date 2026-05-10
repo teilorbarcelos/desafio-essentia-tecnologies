@@ -58,9 +58,18 @@ describe('RouteFactory', () => {
     expect(mockFastify.post).toHaveBeenCalled();
   });
 
-  it('should support unauthenticated routes', () => {
-    registerPostRoute(mockFastify, '/public', minimalConfig, mockHandler, false);
-    /* No security should be set in schema, verified by coverage hitting the false branch */
+  it('should support unauthenticated routes for all methods', () => {
+    registerPostRoute(mockFastify, '/public-post', minimalConfig, mockHandler, false);
+    registerGetRoute(mockFastify, '/public-get', minimalConfig, mockHandler, false);
+    registerPutRoute(mockFastify, '/public-put', minimalConfig, mockHandler, false);
+    registerDeleteRoute(mockFastify, '/public-delete', minimalConfig, mockHandler, false);
+    registerPatchRoute(mockFastify, '/public-patch', minimalConfig, mockHandler, false);
+
     expect(mockFastify.post).toHaveBeenCalled();
+    expect(mockFastify.get).toHaveBeenCalled();
+    expect(mockFastify.put).toHaveBeenCalled();
+    expect(mockFastify.delete).toHaveBeenCalled();
+    expect(mockFastify.patch).toHaveBeenCalled();
   });
 });
+

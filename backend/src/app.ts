@@ -2,15 +2,18 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import Fastify from 'fastify';
 import { auditHook } from './api/hooks/audit.hook.js';
-import { mongoProvider } from './infra/database/MongoProvider.js';
+import { connectWithRetry } from './infra/database/DbConnector.js';
 import { authRoutes } from './modules/Auth/Auth.routes.js';
 import { taskRoutes } from './modules/Task/Task.routes.js';
 import { CONFIG } from './shared/config/env.js';
+import { errorHandler } from './api/hooks/error.handler.js';
 
 export function buildApp() {
   const app = Fastify({
     logger: process.env.NODE_ENV !== 'test'
   });
+
+  app.setErrorHandler(errorHandler);
 
   app.register(jwt, {
     secret: CONFIG.JWT_SECRET
@@ -69,31 +72,9 @@ export function buildApp() {
 /* v8 ignore start */
 export async function start() {
   const app = buildApp();
-  const maxRetries = 10;
-  let retries = 0;
-
-  while (retries < maxRetries) {
-    try {
-      await mongoProvider.connect();
-      
-      const { PrismaProvider } = await import('./infra/database/PrismaProvider.js');
-      const prisma = PrismaProvider.getInstance();
-      await prisma.$connect();
-      
-      console.log('[server]: All databases connected successfully');
-      break;
-    } catch (err) {
-      retries++;
-      console.error(`[server]: Database connection failed (attempt ${String(retries)}/${String(maxRetries)}). Retrying in 3s...`);
-      if (retries >= maxRetries) {
-        console.error('[server]: Max retries reached. Could not connect to databases.');
-        process.exit(1);
-      }
-      await new Promise(resolve => setTimeout(resolve, 3000));
-    }
-  }
 
   try {
+    await connectWithRetry();
     const address = await app.listen({ 
       port: CONFIG.PORT, 
       host: CONFIG.HOST 

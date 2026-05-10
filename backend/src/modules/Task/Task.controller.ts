@@ -24,27 +24,15 @@ export class TaskController {
     const { id } = request.params;
     const data = request.body;
 
-    try {
-      const task = await TaskService.updateTask(id, userId, data);
-      return reply.status(200).send(task);
-    } catch (err) {
-      const error = err as Error;
-      const status = error.message === 'Unauthorized' ? 403 : 404;
-      return reply.status(status).send({ message: error.message });
-    }
+    const task = await TaskService.updateTask(id, userId, data);
+    return reply.status(200).send(task);
   }
 
   async deleteTask(request: FastifyRequest<{ Params: TaskParamsDTO }>, reply: FastifyReply) {
     const { id: userId } = request.user as AuthPayload;
     const { id } = request.params;
 
-    try {
-      await TaskService.deleteTask(id, userId);
-      return reply.status(204).send();
-    } catch (err) {
-      const error = err as Error;
-      const status = error.message === 'Unauthorized' ? 403 : 404;
-      return reply.status(status).send({ message: error.message });
-    }
+    await TaskService.deleteTask(id, userId);
+    return reply.status(204).send();
   }
 }

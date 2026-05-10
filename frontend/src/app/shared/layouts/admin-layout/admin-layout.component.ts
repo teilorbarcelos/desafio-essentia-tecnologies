@@ -8,6 +8,7 @@ import {
   LucideAngularModule,
   User as UserIcon,
 } from 'lucide-angular';
+import { MenuService } from '../../../core/services/menu.service';
 import { AuthService } from '../../../features/auth/auth.service';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
@@ -40,7 +41,6 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
             <a
               [routerLink]="item.path"
               routerLinkActive="bg-indigo-50 text-indigo-700 font-semibold"
-              [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900 group cursor-pointer"
             >
               <lucide-angular [img]="item.icon" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-200"></lucide-angular>
@@ -64,7 +64,7 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
               variant="ghost"
               size="sm"
               (btnClick)="goToProfile()"
-              className="text-gray-500 hover:text-indigo-600 hover:bg-indigo-50"
+              [className]="'hover:text-indigo-600 hover:bg-indigo-50 ' + (menuService.activeFeature() === 'profile' ? 'text-indigo-600 bg-indigo-50 font-semibold' : 'text-gray-500')"
               title="Meu Perfil"
             >
               <lucide-angular [img]="UserIcon" class="w-5 h-5 mr-2"></lucide-angular>
@@ -93,6 +93,7 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
 })
 export class AdminLayoutComponent {
   authService = inject(AuthService);
+  menuService = inject(MenuService);
   private router = inject(Router);
 
   readonly LogOutIcon = LogOut;

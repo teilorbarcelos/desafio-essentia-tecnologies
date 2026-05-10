@@ -32,3 +32,10 @@ export const TaskParamsSchema = Type.Object({
 });
 
 export type TaskParamsDTO = Static<typeof TaskParamsSchema>;
+
+export const PaginationQuerySchema = Type.Object({
+  page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
+  limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 10 })),
+});
+
+export type PaginationQueryDTO = Static<typeof PaginationQuerySchema>;

@@ -5,8 +5,8 @@ export const TaskService = {
     return TaskRepository.create(data);
   },
 
-  async listUserTasks(userId: string) {
-    return TaskRepository.findByUserId(userId);
+  async listUserTasks(userId: string, page?: number, limit?: number) {
+    return TaskRepository.findByUserId(userId, page, limit);
   },
 
   async updateTask(id: string, userId: string, data: UpdateTaskData) {

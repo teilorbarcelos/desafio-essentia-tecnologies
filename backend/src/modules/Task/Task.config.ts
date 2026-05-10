@@ -1,13 +1,14 @@
-import { Type } from '@sinclair/typebox';
+import { createPaginatedResponseSchema } from '../../shared/utils/schema.util.js';
 import { defineRouteConfig } from '../../shared/utils/RouteContract.js';
-import { CreateTaskSchema, TaskParamsSchema, TaskResponseSchema, UpdateTaskSchema } from './Task.schema.js';
+import { CreateTaskSchema, PaginationQuerySchema, TaskParamsSchema, TaskResponseSchema, UpdateTaskSchema } from './Task.schema.js';
 
 const TAG = 'Task';
 
 export const ListTasksConfig = defineRouteConfig({
   tag: TAG,
   summary: 'List user tasks',
-  response: { 200: Type.Array(TaskResponseSchema) }
+  querystring: PaginationQuerySchema,
+  response: { 200: createPaginatedResponseSchema(TaskResponseSchema) }
 });
 
 export const CreateTaskConfig = defineRouteConfig({

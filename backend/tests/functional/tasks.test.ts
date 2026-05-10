@@ -53,19 +53,32 @@ describe('Task Functional Tests', () => {
   });
 
   describe('GET /tasks', () => {
-    it('should list user tasks', async () => {
+    it('should list user tasks with pagination', async () => {
       const headers = generateAuthHeaders();
-      mockPrisma.task.findMany.mockResolvedValue([{ 
+      const task = { 
         id: '11111111-1111-1111-1111-111111111111', 
         title: 'T1',
         userId: '00000000-0000-0000-0000-000000000001',
         completed: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
-      }]);
-      const res = await app.inject({ method: 'GET', url: '/v1/tasks', headers });
+      };
+      
+      mockPrisma.task.findMany.mockResolvedValue([task]);
+      mockPrisma.task.count.mockResolvedValue(1);
+
+      const res = await app.inject({ 
+        method: 'GET', 
+        url: '/v1/tasks', 
+        query: { page: '1', limit: '10' },
+        headers 
+      });
+      
+      const body = JSON.parse(res.body) as { items: unknown[]; total: number; page: number };
       expect(res.statusCode).toBe(200);
-      expect(JSON.parse(res.body)).toHaveLength(1);
+      expect(body.items).toHaveLength(1);
+      expect(body.total).toBe(1);
+      expect(body.page).toBe(1);
     });
   });
 

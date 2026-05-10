@@ -1,13 +1,14 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthPayload } from '../../infra/auth/JWTProvider.js';
-import { CreateTaskDTO, TaskParamsDTO, UpdateTaskDTO } from './Task.schema.js';
+import { CreateTaskDTO, PaginationQueryDTO, TaskParamsDTO, UpdateTaskDTO } from './Task.schema.js';
 import { TaskService } from './Task.service.js';
 
 export class TaskController {
-  async listUserTasks(request: FastifyRequest, reply: FastifyReply) {
+  async listUserTasks(request: FastifyRequest<{ Querystring: PaginationQueryDTO }>, reply: FastifyReply) {
     const { id: userId } = request.user as AuthPayload;
-    const tasks = await TaskService.listUserTasks(userId);
-    return reply.status(200).send(tasks);
+    const { page, limit } = request.query;
+    const result = await TaskService.listUserTasks(userId, page, limit);
+    return reply.status(200).send(result);
   }
 
   async createTask(request: FastifyRequest<{ Body: CreateTaskDTO }>, reply: FastifyReply) {

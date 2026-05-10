@@ -28,6 +28,7 @@ const mockPrisma = {
     findUnique: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
+    count: vi.fn(),
   },
   $connect: vi.fn(),
   $disconnect: vi.fn(),

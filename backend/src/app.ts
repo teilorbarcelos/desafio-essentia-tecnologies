@@ -23,7 +23,14 @@ import { CONFIG } from './shared/config/env.js';
 
 export function buildApp() {
   const app = Fastify({
-    logger: process.env.NODE_ENV !== 'test'
+    logger: process.env.NODE_ENV !== 'test',
+    ajv: {
+      customOptions: {
+        coerceTypes: true,
+        removeAdditional: true,
+        useDefaults: true,
+      }
+    }
   });
 
   app.setErrorHandler(errorHandler);
@@ -43,7 +50,10 @@ export function buildApp() {
   });
 
   app.register(cors, {
-    origin: true
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
   });
 
   app.register(import('@fastify/swagger'), {

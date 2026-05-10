@@ -15,6 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let authReq = req;
   if (token) {
+    console.log('[authInterceptor] Adding token to request');
     authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
@@ -24,14 +25,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
+      console.log('[authInterceptor] Caught error:', error.status, error.url);
       const isLoginRequest = req.url.includes('/v1/auth/login');
       const isRefreshRequest = req.url.includes('/v1/auth/refresh');
 
       if (error.status === 401 && !isLoginRequest && !isRefreshRequest) {
+        console.log('[authInterceptor] 401 Error, attempting refresh...');
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
           return http.post<RefreshResponse>('/v1/auth/refresh', { refreshToken }).pipe(
             switchMap((res) => {
+              console.log('[authInterceptor] Refresh successful, retrying request');
               localStorage.setItem('token', res.token);
               localStorage.setItem('refreshToken', res.refreshToken);
 
@@ -43,6 +47,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               return next(retryReq);
             }),
             catchError((refreshError) => {
+              console.error('[authInterceptor] Refresh failed, logging out', refreshError);
               localStorage.removeItem('token');
               localStorage.removeItem('refreshToken');
               localStorage.removeItem('user');
@@ -51,6 +56,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             }),
           );
         } else {
+          console.log('[authInterceptor] No refresh token found, logging out');
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('user');

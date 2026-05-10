@@ -10,7 +10,8 @@ import {
   ListTasksConfig, 
   CreateTaskConfig, 
   UpdateTaskConfig, 
-  DeleteTaskConfig 
+  DeleteTaskConfig,
+  GetTaskConfig 
 } from './Task.config.js';
 import { CreateTaskDTO, UpdateTaskDTO, TaskParamsDTO } from './Task.schema.js';
 
@@ -26,5 +27,7 @@ export async function taskRoutes(fastify: FastifyInstance) {
   );
   
   registerDeleteRoute<TaskParamsDTO>(fastify, '/:id', DeleteTaskConfig, controller.deleteTask.bind(controller));
+  
+  registerGetRoute<TaskParamsDTO>(fastify, '/:id', GetTaskConfig, controller.getTaskById.bind(controller));
 
 }

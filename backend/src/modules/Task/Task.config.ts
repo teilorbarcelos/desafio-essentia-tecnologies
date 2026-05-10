@@ -32,3 +32,10 @@ export const DeleteTaskConfig = defineRouteConfig({
   params: TaskParamsSchema,
   response: { 204: { type: 'null' } }
 });
+
+export const GetTaskConfig = defineRouteConfig({
+  tag: TAG,
+  summary: 'Get a task by id',
+  params: TaskParamsSchema,
+  response: { 200: TaskResponseSchema }
+});

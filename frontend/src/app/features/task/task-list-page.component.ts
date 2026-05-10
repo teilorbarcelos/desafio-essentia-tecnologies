@@ -59,14 +59,14 @@ import { Task, TaskService } from './task.service';
                 @for (task of tasks(); track task.id) {
                   <div 
                     class="group relative bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 flex flex-col"
-                    [class.opacity-75]="task.completed"
+                    [class.opacity-60]="task.completed"
                   >
                     <div class="space-y-3 flex-1">
                       <div class="flex items-start justify-between gap-4">
                         <h3 
                           class="text-lg font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors"
                           [class.line-through]="task.completed"
-                          [class.text-gray-500]="task.completed"
+                          [class.text-gray-400]="task.completed"
                         >
                           {{ task.title }}
                         </h3>
@@ -83,9 +83,11 @@ import { Task, TaskService } from './task.service';
 
                     <div class="mt-6 pt-4 border-t border-gray-50 flex items-center justify-end shrink-0">
                        <div class="flex items-center space-x-1">
-                         <button (click)="toggleComplete(task)" class="p-2 rounded-lg transition-colors cursor-pointer" [class.text-emerald-600]="task.completed" [class.hover:bg-emerald-50]="!task.completed" [class.text-gray-400]="!task.completed" title="Concluir">
-                           <lucide-angular [img]="CheckIcon" class="w-4 h-4"></lucide-angular>
-                         </button>
+                         @if (!task.completed) {
+                           <button (click)="toggleComplete(task)" class="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer" title="Concluir">
+                             <lucide-angular [img]="CheckIcon" class="w-4 h-4"></lucide-angular>
+                           </button>
+                         }
                          <button (click)="navigateToEdit(task.id)" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer" title="Editar">
                            <lucide-angular [img]="EditIcon" class="w-4 h-4"></lucide-angular>
                          </button>
@@ -164,7 +166,7 @@ export class TaskListPageComponent implements OnInit {
 
   async toggleComplete(task: Task) {
     try {
-      await this.taskService.updateTask(task.id, { completed: !task.completed });
+      await this.taskService.updateTask(task.id, { completed: true });
       this.list.loadItems();
     } catch (error) {
       console.error('Erro ao atualizar tarefa:', error);

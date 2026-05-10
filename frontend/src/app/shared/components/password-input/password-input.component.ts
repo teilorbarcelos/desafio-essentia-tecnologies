@@ -37,7 +37,7 @@ import { LucideAngularModule, Eye, EyeOff } from 'lucide-angular';
         <button
           type="button"
           (click)="togglePassword()"
-          class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+          class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           tabindex="-1"
         >
           <lucide-angular

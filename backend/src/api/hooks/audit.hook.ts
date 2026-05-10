@@ -3,14 +3,17 @@ import { AuthPayload } from '../../infra/auth/JWTProvider.js';
 import { AuditRepository } from '../../modules/Audit/Audit.repository.js';
 
 export async function auditHook(request: FastifyRequest, reply: FastifyReply) {
-  if (request.url === '/health' || request.url.startsWith('/auth')) {
+  const isHealth = request.url === '/health';
+  const isAuth = request.url.startsWith('/auth');
+  
+  if (isHealth || isAuth) {
     return;
   }
 
   const user = request.user as AuthPayload | undefined;
   
-  const body = (request.body as Record<string, unknown>) || {};
-  const payload = { ...body };
+  const body = request.body as Record<string, unknown> | undefined;
+  const payload = body ? { ...body } : {};
   
   const sensitiveFields = ['password', 'currentPassword', 'newPassword'];
   sensitiveFields.forEach(field => {

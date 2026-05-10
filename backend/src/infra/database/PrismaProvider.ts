@@ -2,13 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { CONFIG } from '../../shared/config/env.js';
 
-export class PrismaProvider {
-  private static instance: PrismaClient;
+let prismaInstance: PrismaClient | null = null;
 
-  private constructor() {}
-
-  static getInstance(): PrismaClient {
-    if (!this.instance) {
+export const PrismaProvider = {
+  getInstance(): PrismaClient {
+    if (!prismaInstance) {
       const url = new URL(CONFIG.DATABASE_URL);
       const adapter = new PrismaMariaDb({
         host: url.hostname,
@@ -18,11 +16,11 @@ export class PrismaProvider {
         database: url.pathname.replace('/', ''),
       });
 
-      this.instance = new PrismaClient({ adapter });
+      prismaInstance = new PrismaClient({ adapter });
     }
 
-    return this.instance;
+    return prismaInstance;
   }
-}
+};
 
 export const prisma = PrismaProvider.getInstance();

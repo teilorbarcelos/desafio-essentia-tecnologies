@@ -7,13 +7,13 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     await request.jwtVerify();
     
     const user = request.user as AuthPayload;
-    const token = request.headers.authorization!.replace('Bearer ', '');
+    const token = (request.headers.authorization ?? '').replace('Bearer ', '');
 
     const isValid = await SessionManager.validateSession(user.id, token);
     if (!isValid) {
       return reply.status(401).send({ message: 'Session invalid or expired' });
     }
-  } catch (err) {
+  } catch {
     return reply.status(401).send({ message: 'Unauthorized' });
   }
 }

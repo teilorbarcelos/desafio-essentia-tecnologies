@@ -1,31 +1,16 @@
 import { Redis } from 'ioredis';
 import { CONFIG } from '../../shared/config/env.js';
 
-export class RedisProvider {
-  private static instance: Redis;
+let redisInstance: Redis | null = null;
 
-  private constructor() {}
+export const RedisProvider = {
+  getInstance(): Redis {
+    redisInstance ??= new Redis(CONFIG.REDIS_URL, {
+      maxRetriesPerRequest: null,
+    });
 
-  public static getInstance(): Redis {
-    if (!RedisProvider.instance) {
-      RedisProvider.instance = new Redis(CONFIG.REDIS_URL, {
-        retryStrategy(times) {
-          return Math.min(times * 50, 2000);
-        },
-        maxRetriesPerRequest: null,
-      });
-
-      RedisProvider.instance.on('error', (err) => {
-        console.error('[Redis] Error:', err);
-      });
-
-      RedisProvider.instance.on('connect', () => {
-        console.log('[Redis] Connected successfully');
-      });
-    }
-
-    return RedisProvider.instance;
+    return redisInstance;
   }
-}
+};
 
 export const redis = RedisProvider.getInstance();

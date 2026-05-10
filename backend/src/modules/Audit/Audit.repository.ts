@@ -12,21 +12,21 @@ export interface AuditLog {
   ip?: string;
 }
 
-export class AuditRepository {
-  private static collectionName = 'audit_logs';
+const collectionName = 'audit_logs';
 
-  static async create(log: AuditLog) {
+export const AuditRepository = {
+  async create(log: AuditLog) {
     const db = mongoProvider.getDb();
-    const collection = db.collection(this.collectionName);
+    const collection = db.collection(collectionName);
     
     await collection.insertOne({
       ...log,
-      timestamp: log.timestamp || new Date()
+      timestamp: log.timestamp
     });
-  }
+  },
 
-  static async listAll() {
+  async listAll() {
     const db = mongoProvider.getDb();
-    return db.collection(this.collectionName).find().sort({ timestamp: -1 }).toArray();
+    return db.collection(collectionName).find().sort({ timestamp: -1 }).toArray();
   }
-}
+};

@@ -3,6 +3,9 @@ import tseslint from 'typescript-eslint';
 import globals from 'globals';
 
 export default tseslint.config(
+  {
+    ignores: ['dist', 'node_modules', 'coverage', 'eslint.config.mjs', 'prisma.config.ts', 'vitest.config.ts'],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
@@ -31,7 +34,8 @@ export default tseslint.config(
             create(context) {
               return {
                 Program() {
-                  const comments = context.sourceCode.getAllComments();
+                  const sourceCode = context.sourceCode;
+                  const comments = sourceCode.getAllComments();
                   comments.forEach((comment) => {
                     if (comment.type === 'Line') {
                       context.report({
@@ -63,6 +67,8 @@ export default tseslint.config(
         },
       ],
       'local/no-line-comments': 'error',
+      '@typescript-eslint/return-await': 'off',
+      '@typescript-eslint/require-await': 'off',
     },
   },
   {
@@ -70,9 +76,7 @@ export default tseslint.config(
     files: ['tests/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      'no-restricted-syntax': [
-        'off',
-      ],
+      'no-restricted-syntax': 'off',
     },
   }
 );

@@ -1,4 +1,4 @@
-- [x] Create `backend` directory in `desafio-essentia-tecnologies`
+- [x] Create `backend` directory in `desafio-techx-tecnologies`
 - [x] Switch from Express to Fastify
 - [x] Configure `tsconfig.json`
 - [x] Create `src/app.ts` with a basic Fastify server

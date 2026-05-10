@@ -40,7 +40,13 @@ export class AuthService {
 
     if (!user) throw new Error('User not found');
 
-    const { password, ...userWithoutPassword } = user;
+    const userWithoutPassword = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
     return userWithoutPassword;
   }
 
@@ -61,7 +67,7 @@ export class AuthService {
       await SessionManager.createSession(user.id, tokens.token, tokens.refreshToken, newPayload);
 
       return tokens;
-    } catch (err) {
+    } catch {
       throw new Error('Unauthorized');
     }
   }

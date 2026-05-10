@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-// Mock Redis
+/* Mock Redis */
 const mockRedis = {
   get: vi.fn(),
   set: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('ioredis', () => ({
   default: vi.fn().mockImplementation(() => mockRedis),
 }));
 
-// Mock Prisma
+/* Mock Prisma */
 const mockPrisma = {
   user: {
     findUnique: vi.fn(),
@@ -37,14 +37,14 @@ vi.mock('../src/infra/database/PrismaProvider.js', () => ({
   PrismaProvider: {
     getInstance: () => mockPrisma
   },
-  prisma: mockPrisma // Exportação nomeada mockada
+  prisma: mockPrisma /* Exportação nomeada mockada */
 }));
 
 vi.mock('../src/infra/database/RedisProvider.js', () => ({
   redis: mockRedis,
 }));
 
-// Mock Mongo
+/* Mock Mongo */
 const mockMongoDb = {
   collection: vi.fn().mockReturnThis(),
   insertOne: vi.fn().mockResolvedValue({}),
@@ -61,7 +61,7 @@ vi.mock('../src/infra/database/MongoProvider.js', () => ({
   }
 }));
 
-// Mock Audit
+/* Mock Audit */
 vi.mock('../src/modules/Audit/Audit.repository.js', () => ({
   AuditRepository: {
     create: vi.fn().mockResolvedValue({}),

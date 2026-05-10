@@ -85,10 +85,6 @@ describe('Task Functional Tests', () => {
   describe('PATCH /tasks/:id', () => {
     it('should update successfully', async () => {
       const headers = generateAuthHeaders();
-      mockPrisma.task.findUnique.mockResolvedValue({ 
-        id: '11111111-1111-1111-1111-111111111111', 
-        userId: '00000000-0000-0000-0000-000000000001' 
-      });
       mockPrisma.task.update.mockResolvedValue({ 
         id: '11111111-1111-1111-1111-111111111111', 
         title: 'Updated',
@@ -107,12 +103,9 @@ describe('Task Functional Tests', () => {
       expect(res.statusCode).toBe(200);
     });
 
-    it('should return 403 if not owner', async () => {
+    it('should return 404 if not owner', async () => {
       const headers = generateAuthHeaders('00000000-0000-0000-0000-000000000001');
-      mockPrisma.task.findUnique.mockResolvedValue({ 
-        id: '11111111-1111-1111-1111-111111111111', 
-        userId: '00000000-0000-0000-0000-000000000002' 
-      });
+      mockPrisma.task.update.mockRejectedValue(new Error('Record not found'));
 
       const res = await app.inject({
         method: 'PATCH',
@@ -120,12 +113,12 @@ describe('Task Functional Tests', () => {
         headers,
         payload: { title: 'Steal' }
       });
-      expect(res.statusCode).toBe(403);
+      expect(res.statusCode).toBe(404);
     });
 
     it('should return 404 if not found', async () => {
       const headers = generateAuthHeaders();
-      mockPrisma.task.findUnique.mockResolvedValue(null);
+      mockPrisma.task.update.mockRejectedValue(new Error('Record not found'));
 
       const res = await app.inject({
         method: 'PATCH',
@@ -140,30 +133,23 @@ describe('Task Functional Tests', () => {
   describe('DELETE /tasks/:id', () => {
     it('should delete successfully', async () => {
       const headers = generateAuthHeaders();
-      mockPrisma.task.findUnique.mockResolvedValue({ 
-        id: '11111111-1111-1111-1111-111111111111', 
-        userId: '00000000-0000-0000-0000-000000000001' 
-      });
       mockPrisma.task.delete.mockResolvedValue({ id: '11111111-1111-1111-1111-111111111111' });
 
       const res = await app.inject({ method: 'DELETE', url: '/v1/tasks/11111111-1111-1111-1111-111111111111', headers });
       expect(res.statusCode).toBe(204);
     });
 
-    it('should return 403 if not owner', async () => {
+    it('should return 404 if not owner', async () => {
       const headers = generateAuthHeaders('00000000-0000-0000-0000-000000000001');
-      mockPrisma.task.findUnique.mockResolvedValue({ 
-        id: '11111111-1111-1111-1111-111111111111', 
-        userId: '00000000-0000-0000-0000-000000000002' 
-      });
+      mockPrisma.task.delete.mockRejectedValue(new Error('Record not found'));
 
       const res = await app.inject({ method: 'DELETE', url: '/v1/tasks/11111111-1111-1111-1111-111111111111', headers });
-      expect(res.statusCode).toBe(403);
+      expect(res.statusCode).toBe(404);
     });
 
     it('should return 404 if not found', async () => {
       const headers = generateAuthHeaders();
-      mockPrisma.task.findUnique.mockResolvedValue(null);
+      mockPrisma.task.delete.mockRejectedValue(new Error('Record not found'));
 
       const res = await app.inject({ method: 'DELETE', url: '/v1/tasks/99999999-9999-9999-9999-999999999999', headers });
       expect(res.statusCode).toBe(404);

@@ -47,16 +47,20 @@ export const TaskRepository = {
     });
   },
 
-  async update(id: string, data: UpdateTaskData) {
+  async update(id: string, userId: string, data: UpdateTaskData) {
     return prisma.task.update({
-      where: { id },
+      where: { 
+        id_userId: { id, userId }
+      },
       data
     });
   },
 
-  async delete(id: string) {
+  async delete(id: string, userId: string) {
     return prisma.task.delete({
-      where: { id }
+      where: { 
+        id_userId: { id, userId }
+      }
     });
   }
 };

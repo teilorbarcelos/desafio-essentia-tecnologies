@@ -1,4 +1,5 @@
 import { TaskRepository, CreateTaskData, UpdateTaskData } from './Task.repository.js';
+import { NotFoundError } from '../../shared/errors/AppError.js';
 
 export const TaskService = {
   async createTask(data: CreateTaskData) {
@@ -10,20 +11,18 @@ export const TaskService = {
   },
 
   async updateTask(id: string, userId: string, data: UpdateTaskData) {
-    const task = await TaskRepository.findById(id);
-    
-    if (!task) throw new Error('Task not found');
-    if (task.userId !== userId) throw new Error('Unauthorized');
-
-    return TaskRepository.update(id, data);
+    try {
+      return await TaskRepository.update(id, userId, data);
+    } catch (err) {
+      throw new NotFoundError('Task not found or unauthorized');
+    }
   },
 
   async deleteTask(id: string, userId: string) {
-    const task = await TaskRepository.findById(id);
-    
-    if (!task) throw new Error('Task not found');
-    if (task.userId !== userId) throw new Error('Unauthorized');
-
-    return TaskRepository.delete(id);
+    try {
+      await TaskRepository.delete(id, userId);
+    } catch (err) {
+      throw new NotFoundError('Task not found or unauthorized');
+    }
   }
 };

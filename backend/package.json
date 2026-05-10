@@ -19,7 +19,8 @@
     "app:up": "docker compose up -d",
     "app:down": "docker compose down",
     "db:deploy": "prisma migrate dev && prisma db seed",
-    "seed": "npx prisma db seed"
+    "seed": "npx prisma db seed",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",

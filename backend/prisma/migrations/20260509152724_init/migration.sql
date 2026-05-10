@@ -26,3 +26,5 @@ CREATE TABLE `task` (
 
 -- AddForeignKey
 ALTER TABLE `task` ADD CONSTRAINT `task_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX `task_id_userId_key` ON `task`(`id`, `userId`);

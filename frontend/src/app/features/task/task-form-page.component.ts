@@ -1,92 +1,54 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { createFormPageController } from '../../core/utils/form-page.utils';
 import { MenuService } from '../../core/services/menu.service';
-import { ButtonComponent } from '../../shared/components/button/button.component';
-import { InputComponent } from '../../shared/components/input/input.component';
-import { TextareaComponent } from '../../shared/components/textarea/textarea.component';
+import { createFormPageController } from '../../core/utils/form-page.utils';
+import { InputComponent } from '../../shared/components/input.component';
+import { PageFormComponent } from '../../shared/components/page-form.component';
+import { TextareaComponent } from '../../shared/components/textarea.component';
 import { CreateTaskDTO, Task, TaskService } from './task.service';
 
 @Component({
   selector: 'app-task-form-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    ReactiveFormsModule, 
-    ButtonComponent, 
-    InputComponent, 
-    TextareaComponent
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    InputComponent,
+    TextareaComponent,
+    PageFormComponent,
   ],
   template: `
-    <div class="max-w-2xl mx-auto space-y-6">
-      <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-        <div class="flex items-center justify-between border-b border-gray-100 pb-6 mb-6">
-          <div>
-            <h1 class="text-2xl font-bold text-gray-900">
-              {{ isEditing() ? 'Editar Tarefa' : 'Nova Tarefa' }}
-            </h1>
-            <p class="text-sm text-gray-500 mt-1">
-              {{ isEditing() ? 'Atualize as informações da sua tarefa.' : 'Crie uma nova tarefa para sua lista.' }}
-            </p>
-          </div>
-          <app-button variant="ghost" size="sm" (btnClick)="cancel()"> 
-            Cancelar 
-          </app-button>
-        </div>
+    <app-page-form
+      [title]="isEditing() ? 'Editar Tarefa' : 'Nova Tarefa'"
+      [description]="isEditing() ? 'Atualize as informações da sua tarefa.' : 'Crie uma nova tarefa para sua lista.'"
+      [submitLabel]="isEditing() ? 'Salvar Alterações' : 'Criar Tarefa'"
+      [isLoading]="isEditing() && isLoading()"
+      [isSubmitting]="isPending()"
+      (submit)="onSubmit()"
+      (cancel)="cancel()"
+    >
+      <form [formGroup]="taskForm" class="space-y-6">
+        <app-input
+          label="Título"
+          placeholder="Ex: Estudar Angular"
+          formControlName="title"
+          [error]="getError('title')"
+          id="task-title"
+        ></app-input>
 
-        @if (isEditing() && isLoading()) {
-          <div class="py-12 text-center">
-            <div class="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-indigo-600 rounded-full" role="status" aria-label="loading">
-              <span class="sr-only">Carregando...</span>
-            </div>
-            <p class="mt-4 text-gray-500 text-sm">Carregando dados da tarefa...</p>
-          </div>
-        } @else {
-          <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="space-y-6">
-            <app-input
-              label="Título"
-              formControlName="title"
-              placeholder="Ex: Reunião de Planejamento"
-              [error]="getError('title')"
-            ></app-input>
-
-            <app-textarea
-              label="Descrição"
-              formControlName="description"
-              placeholder="Descreva os detalhes da tarefa..."
-              [rows]="5"
-              [error]="getError('description')"
-            ></app-textarea>
-
-            @if (isEditing()) {
-              <div class="flex items-center space-x-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <input
-                  type="checkbox"
-                  id="completed"
-                  formControlName="completed"
-                  class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
-                />
-                <label for="completed" class="text-sm font-medium text-gray-700 cursor-pointer">
-                  Marcar como concluída
-                </label>
-              </div>
-            }
-
-            <div class="pt-6 flex justify-end space-x-3">
-              <app-button type="button" variant="secondary" (btnClick)="cancel()">
-                Descartar
-              </app-button>
-              <app-button type="submit" [loading]="isPending()">
-                {{ isEditing() ? 'Salvar Alterações' : 'Criar Tarefa' }}
-              </app-button>
-            </div>
-          </form>
-        }
-      </div>
-    </div>
+        <app-textarea
+          label="Descrição"
+          placeholder="Descreva detalhes da tarefa..."
+          formControlName="description"
+          [rows]="5"
+          [error]="getError('description')"
+          id="task-description"
+        ></app-textarea>
+      </form>
+    </app-page-form>
   `,
 })
 export class TaskFormPageComponent implements OnInit, OnDestroy {
@@ -94,13 +56,12 @@ export class TaskFormPageComponent implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
   private menuService = inject(MenuService);
 
-  taskForm: FormGroup = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(1)]],
+  taskForm = this.fb.group({
+    title: ['', [Validators.required, Validators.minLength(3)]],
     description: [''],
-    completed: [false],
   });
 
-  private formCtrl = createFormPageController<Task, CreateTaskDTO>({
+  private controller = createFormPageController<Task, CreateTaskDTO>({
     feature: 'tarefa',
     baseRoute: '/tasks',
     form: this.taskForm,
@@ -109,21 +70,28 @@ export class TaskFormPageComponent implements OnInit, OnDestroy {
     update: (id, data) => this.taskService.updateTask(id, data),
   });
 
-  id = this.formCtrl.id;
-  isEditing = this.formCtrl.isEditing;
-  isLoading = this.formCtrl.isLoading;
-  isPending = this.formCtrl.isPending;
-
-  getError = this.formCtrl.getError;
-  onSubmit = this.formCtrl.onSubmit;
-  cancel = this.formCtrl.cancel;
+  isEditing = this.controller.isEditing;
+  isLoading = this.controller.isLoading;
+  isPending = this.controller.isPending;
 
   ngOnInit() {
     this.menuService.setActiveFeature('tasks');
-    this.formCtrl.init();
+    this.controller.init();
   }
 
   ngOnDestroy() {
-    this.formCtrl.destroy();
+    this.controller.destroy();
+  }
+
+  getError(field: string) {
+    return this.controller.getError(field);
+  }
+
+  onSubmit() {
+    this.controller.onSubmit();
+  }
+
+  cancel() {
+    this.controller.cancel();
   }
 }

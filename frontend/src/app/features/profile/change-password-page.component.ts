@@ -3,8 +3,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { ButtonComponent } from '../../shared/components/button/button.component';
-import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
+import { ButtonComponent } from '../../shared/components/button.component';
+import { PasswordInputComponent } from '../../shared/components/password-input.component';
 
 @Component({
   selector: 'app-change-password-page',

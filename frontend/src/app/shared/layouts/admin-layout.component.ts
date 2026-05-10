@@ -2,17 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
-  CheckCircle,
-  ListTodo,
-  LogOut,
-  LucideAngularModule,
-  User as UserIcon,
+    CheckCircle,
+    ListTodo,
+    LogOut,
+    LucideAngularModule,
+    User as UserIcon,
 } from 'lucide-angular';
-import { MenuService } from '../../../core/services/menu.service';
-import { AuthService } from '../../../features/auth/auth.service';
-import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
-import { ButtonComponent } from '../../components/button/button.component';
-import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
+import { MenuService } from '../../core/services/menu.service';
+import { AuthService } from '../../features/auth/auth.service';
+import { BreadcrumbComponent } from '../components/breadcrumb.component';
+import { ButtonComponent } from '../components/button.component';
+import { ToastContainerComponent } from '../components/toast-container.component';
 
 @Component({
   selector: 'app-admin-layout',
@@ -29,7 +29,6 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
     <div class="h-screen w-full bg-gray-50 font-sans antialiased text-gray-900 flex overflow-hidden">
       <app-toast-container></app-toast-container>
       
-      <!-- Sidebar -->
       <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm shrink-0 z-20">
         <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
           <div class="flex items-center space-x-2 text-indigo-600">
@@ -52,9 +51,7 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
         </nav>
       </aside>
 
-      <!-- Main Content -->
       <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative">
-        <!-- Top Bar -->
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
           <div class="flex items-center space-x-2 text-indigo-600">
             <lucide-angular [img]="LogoIcon" class="w-6 h-6"></lucide-angular>
@@ -85,16 +82,13 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
           </div>
         </header>
 
-        <!-- Page Viewport -->
         <div class="flex-1 flex flex-col min-h-0 relative">
-          <!-- Fixed Breadcrumb area - Matching Page Width -->
           <div class="px-8 pt-8 shrink-0">
             <div class="max-w-2xl mx-auto w-full">
               <app-breadcrumb></app-breadcrumb>
             </div>
           </div>
 
-          <!-- Dynamic Content -->
           <div class="flex-1 flex flex-col min-h-0 relative">
             <router-outlet></router-outlet>
           </div>

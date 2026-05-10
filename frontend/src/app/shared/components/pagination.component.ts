@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { Component, EventEmitter, Input, Output, computed } from '@angular/core';
+import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-pagination',
@@ -12,14 +12,14 @@ import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
         <button
           (click)="onPageChange(currentPage - 1)"
           [disabled]="currentPage === 1"
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           Anterior
         </button>
         <button
           (click)="onPageChange(currentPage + 1)"
           [disabled]="currentPage === totalPages"
-          class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           Próximo
         </button>
@@ -41,7 +41,7 @@ import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
             <button
               (click)="onPageChange(currentPage - 1)"
               [disabled]="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               <span class="sr-only">Anterior</span>
               <lucide-angular [img]="ChevronLeftIcon" class="w-5 h-5"></lucide-angular>
@@ -54,6 +54,7 @@ import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
                 [class.text-indigo-600]="page === currentPage"
                 [class.border-indigo-500]="page === currentPage"
                 [class.z-10]="page === currentPage"
+                [class.cursor-pointer]="page !== currentPage"
                 class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
               >
                 {{ page }}
@@ -63,7 +64,7 @@ import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
             <button
               (click)="onPageChange(currentPage + 1)"
               [disabled]="currentPage === totalPages"
-              class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               <span class="sr-only">Próximo</span>
               <lucide-angular [img]="ChevronRightIcon" class="w-5 h-5"></lucide-angular>
@@ -100,7 +101,6 @@ export class PaginationComponent {
     const current = this.currentPage;
     const pages: number[] = [];
     
-    // Show max 5 pages around current
     let start = Math.max(1, current - 2);
     let end = Math.min(total, start + 4);
     

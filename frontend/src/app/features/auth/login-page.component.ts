@@ -9,9 +9,9 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { ButtonComponent } from '../../shared/components/button/button.component';
-import { InputComponent } from '../../shared/components/input/input.component';
-import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
+import { ButtonComponent } from '../../shared/components/button.component';
+import { InputComponent } from '../../shared/components/input.component';
+import { PasswordInputComponent } from '../../shared/components/password-input.component';
 import { AuthService, User } from './auth.service';
 
 interface LoginResponse {

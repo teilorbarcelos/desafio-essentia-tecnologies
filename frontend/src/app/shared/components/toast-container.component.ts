@@ -8,7 +8,7 @@ import {
   TriangleAlert,
   X
 } from 'lucide-angular';
-import { ToastService, ToastType } from '../../../core/services/toast.service';
+import { ToastService, ToastType } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-toast-container',

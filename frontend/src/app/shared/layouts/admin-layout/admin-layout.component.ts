@@ -6,6 +6,7 @@ import {
   LogOut,
   ListTodo,
   CheckCircle,
+  User as UserIcon,
 } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -54,7 +55,18 @@ import { ButtonComponent } from '../../components/button/button.component';
             <span class="text-xl font-bold tracking-tight text-gray-900">TechX Todo</span>
           </div>
           
-          <div class="flex items-center">
+          <div class="flex items-center space-x-2">
+            <app-button
+              variant="ghost"
+              size="sm"
+              (btnClick)="goToProfile()"
+              className="text-gray-500 hover:text-indigo-600 hover:bg-indigo-50"
+              title="Meu Perfil"
+            >
+              <lucide-angular [img]="UserIcon" class="w-5 h-5 mr-2"></lucide-angular>
+              <span class="hidden sm:inline">Perfil</span>
+            </app-button>
+
             <app-button
               variant="ghost"
               size="sm"
@@ -63,7 +75,7 @@ import { ButtonComponent } from '../../components/button/button.component';
               title="Sair"
             >
               <lucide-angular [img]="LogOutIcon" class="w-5 h-5 mr-2"></lucide-angular>
-              Sair
+              <span class="hidden sm:inline">Sair</span>
             </app-button>
           </div>
         </header>
@@ -82,10 +94,15 @@ export class AdminLayoutComponent {
 
   readonly LogOutIcon = LogOut;
   readonly LogoIcon = CheckCircle;
+  readonly UserIcon = UserIcon;
 
   navItems = [
     { name: 'Minhas Tarefas', path: '/dashboard', icon: ListTodo },
   ];
+
+  goToProfile() {
+    this.router.navigate(['/profile/change-password']);
+  }
 
   handleLogout() {
     this.authService.logout();

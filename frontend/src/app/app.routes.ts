@@ -1,13 +1,11 @@
 import { Routes } from '@angular/router';
-import { LoginPageComponent } from './features/auth/login-page.component';
 import { AdminLayoutComponent } from './shared/layouts/admin-layout/admin-layout.component';
-import { DashboardPageComponent } from './features/dashboard/dashboard-page.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
-    component: LoginPageComponent,
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES),
   },
   {
     path: '',
@@ -21,7 +19,11 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        component: DashboardPageComponent,
+        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./features/profile/profile.routes').then(m => m.PROFILE_ROUTES),
       },
     ],
   },

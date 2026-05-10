@@ -1,22 +1,24 @@
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import {
-  CheckCircle,
-  CircleAlert,
-  CircleCheck,
-  Eye,
-  EyeOff,
-  Info,
+  LucideIconProvider,
   LUCIDE_ICONS,
   LayoutDashboard,
-  ListTodo,
   LogOut,
-  LucideIconProvider,
-  TriangleAlert,
   User,
-  X
+  CheckCircle,
+  Eye,
+  EyeOff,
+  ListTodo,
+  CircleAlert,
+  TriangleAlert,
+  CircleCheck,
+  Info,
+  X,
+  Home,
+  ChevronRight
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -54,7 +56,9 @@ export const appConfig: ApplicationConfig = {
         TriangleAlert,
         CircleCheck,
         Info,
-        X
+        X,
+        Home,
+        ChevronRight
       })
     },
   ]

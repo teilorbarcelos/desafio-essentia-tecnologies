@@ -12,6 +12,7 @@ import { MenuService } from '../../../core/services/menu.service';
 import { AuthService } from '../../../features/auth/auth.service';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
+import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-admin-layout',
@@ -22,6 +23,7 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
     LucideAngularModule,
     ButtonComponent,
     ToastContainerComponent,
+    BreadcrumbComponent,
   ],
   template: `
     <div class="flex h-screen w-full bg-gray-50 font-sans antialiased text-gray-900">
@@ -85,6 +87,7 @@ import { ToastContainerComponent } from '../../components/toast-container/toast-
 
         <!-- Page Content -->
         <div class="flex-1 flex flex-col min-h-0 overflow-y-auto p-8">
+          <app-breadcrumb></app-breadcrumb>
           <router-outlet></router-outlet>
         </div>
       </main>

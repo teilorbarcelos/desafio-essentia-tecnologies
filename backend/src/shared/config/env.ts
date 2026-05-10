@@ -12,6 +12,7 @@ export const CONFIG = {
   FIRST_USER_EMAIL: process.env.FIRST_USER_EMAIL ?? 'admin@admin.com',
   FIRST_USER_PASSWORD: process.env.FIRST_USER_PASSWORD ?? 'admin123',
   MONGO_URL: process.env.MONGO_URL ?? 'mongodb://admin:password@localhost:27017/techx_todo?authSource=admin',
-  NODE_ENV: process.env.NODE_ENV ?? 'development'
+  NODE_ENV: process.env.NODE_ENV ?? 'development',
+  MAX_PAGE_SIZE: 100
 };
 /* v8 ignore stop */

@@ -7,8 +7,9 @@ export interface StrictRouteSchema extends FastifySchema {
   security?: Record<string, string[]>[];
 }
 
-export function createPaginatedResponseSchema(itemSchema: unknown) {
+export function createPaginatedResponseSchema(itemSchema: unknown, id?: string) {
   return {
+    $id: id,
     type: 'object',
     properties: {
       items: {

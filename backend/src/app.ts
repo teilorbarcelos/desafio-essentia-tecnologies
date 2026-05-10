@@ -2,11 +2,24 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import Fastify from 'fastify';
 import { auditHook } from './api/hooks/audit.hook.js';
+import { errorHandler } from './api/hooks/error.handler.js';
 import { connectWithRetry } from './infra/database/DbConnector.js';
 import { authRoutes } from './modules/Auth/Auth.routes.js';
+import {
+  AuthResponseSchema,
+  ChangePasswordSchema,
+  LoginSchema,
+  RefreshSchema,
+  UserMeResponseSchema
+} from './modules/Auth/Auth.schema.js';
 import { taskRoutes } from './modules/Task/Task.routes.js';
+import {
+  CreateTaskSchema,
+  PaginationQuerySchema,
+  TaskResponseSchema,
+  UpdateTaskSchema
+} from './modules/Task/Task.schema.js';
 import { CONFIG } from './shared/config/env.js';
-import { errorHandler } from './api/hooks/error.handler.js';
 
 export function buildApp() {
   const app = Fastify({
@@ -14,6 +27,16 @@ export function buildApp() {
   });
 
   app.setErrorHandler(errorHandler);
+
+  app.addSchema(TaskResponseSchema);
+  app.addSchema(CreateTaskSchema);
+  app.addSchema(UpdateTaskSchema);
+  app.addSchema(PaginationQuerySchema);
+  app.addSchema(LoginSchema);
+  app.addSchema(RefreshSchema);
+  app.addSchema(ChangePasswordSchema);
+  app.addSchema(AuthResponseSchema);
+  app.addSchema(UserMeResponseSchema);
 
   app.register(jwt, {
     secret: CONFIG.JWT_SECRET

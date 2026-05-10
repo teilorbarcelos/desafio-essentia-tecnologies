@@ -8,7 +8,7 @@ export const ListTasksConfig = defineRouteConfig({
   tag: TAG,
   summary: 'List user tasks',
   querystring: PaginationQuerySchema,
-  response: { 200: createPaginatedResponseSchema(TaskResponseSchema) }
+  response: { 200: createPaginatedResponseSchema(TaskResponseSchema, 'TaskPaginatedResponse') }
 });
 
 export const CreateTaskConfig = defineRouteConfig({

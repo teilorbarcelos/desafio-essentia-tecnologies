@@ -1,4 +1,4 @@
-import { inject, signal, effect } from '@angular/core';
+import { effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../services/toast.service';
 
@@ -51,7 +51,6 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
       items.set(res.items);
       totalItems.set(res.total);
     } catch (error) {
-      console.error(`Error loading ${config.feature}s`, error);
       toastService.error(
         config.messages?.loadError || `Erro ao carregar a listagem de ${config.feature}s.`,
       );
@@ -60,7 +59,6 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
     }
   }
 
-  // Effect to reload when page or size changes
   effect(() => {
     loadItems();
   });
@@ -97,7 +95,6 @@ export function createListPageController<T>(config: ListPageConfig<T>) {
       );
       loadItems();
     } catch (error) {
-      console.error(`Error deleting ${config.feature}`, error);
       toastService.error(config.messages?.deleteError || `Erro ao excluir o ${config.feature}.`);
     }
   }

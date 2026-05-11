@@ -2,16 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
-    CheckCircle,
-    ListTodo,
-    LogOut,
-    LucideAngularModule,
-    User as UserIcon,
+  CheckCircle,
+  ListTodo,
+  LogOut,
+  LucideAngularModule,
+  User as UserIcon,
 } from 'lucide-angular';
-import { MenuService } from '../../core/services/menu.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 import { AuthService } from '../../features/auth/auth.service';
 import { BreadcrumbComponent } from '../components/breadcrumb.component';
-import { ButtonComponent } from '../components/button.component';
+import { ConfirmModalComponent } from '../components/confirm-modal.component';
 import { ToastContainerComponent } from '../components/toast-container.component';
 
 @Component({
@@ -21,13 +21,23 @@ import { ToastContainerComponent } from '../components/toast-container.component
     CommonModule,
     RouterModule,
     LucideAngularModule,
-    ButtonComponent,
     ToastContainerComponent,
     BreadcrumbComponent,
+    ConfirmModalComponent,
   ],
   template: `
     <div class="h-screen w-full bg-gray-50 font-sans antialiased text-gray-900 flex overflow-hidden">
       <app-toast-container></app-toast-container>
+      <app-confirm-modal
+        [isOpen]="confirmService.state().isOpen"
+        [title]="confirmService.state().options.title || ''"
+        [message]="confirmService.state().options.message || ''"
+        [confirmLabel]="confirmService.state().options.confirmLabel || ''"
+        [cancelLabel]="confirmService.state().options.cancelLabel || ''"
+        [variant]="confirmService.state().options.variant || 'info'"
+        (confirm)="confirmService.handleConfirm()"
+        (cancel)="confirmService.handleCancel()"
+      ></app-confirm-modal>
       
       <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm shrink-0 z-20">
         <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
@@ -36,49 +46,47 @@ import { ToastContainerComponent } from '../components/toast-container.component
             <span class="text-xl font-bold tracking-tight text-gray-900">TechX To-do</span>
           </div>
         </div>
-        
-        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-          @for (item of navItems; track item.path) {
+
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+          @for (item of menuItems; track item.label) {
             <a
               [routerLink]="item.path"
-              routerLinkActive="bg-indigo-50 text-indigo-700 font-semibold"
-              class="flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900 group cursor-pointer"
+              routerLinkActive="bg-indigo-50 text-indigo-600 shadow-sm"
+              [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }"
+              class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-gray-50 group"
             >
-              <lucide-angular [img]="item.icon" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-200"></lucide-angular>
-              {{ item.name }}
+              <lucide-angular [img]="item.icon" class="w-5 h-5 opacity-70 group-hover:opacity-100"></lucide-angular>
+              <span>{{ item.label }}</span>
             </a>
           }
         </nav>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50/50">
+          <button
+            (click)="logout()"
+            class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-all duration-200 group"
+          >
+            <lucide-angular [img]="LogoutIcon" class="w-5 h-5 opacity-70 group-hover:opacity-100"></lucide-angular>
+            <span>Sair do App</span>
+          </button>
+        </div>
       </aside>
 
       <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative">
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
           <div class="flex items-center space-x-2 text-indigo-600">
             <lucide-angular [img]="LogoIcon" class="w-6 h-6"></lucide-angular>
-            <span class="text-xl font-bold tracking-tight text-gray-900">TechX To-do</span>
+            <span class="text-sm font-semibold tracking-wide uppercase text-gray-400">TechX Platform</span>
           </div>
-          
-          <div class="flex items-center space-x-2">
-            <app-button
-              variant="ghost"
-              size="sm"
-              (btnClick)="goToProfile()"
-              [className]="'hover:text-indigo-600 hover:bg-indigo-50 ' + (menuService.activeFeature() === 'profile' ? 'text-indigo-600 bg-indigo-50 font-semibold' : 'text-gray-500')"
-              title="Meu Perfil"
-            >
-              <lucide-angular [img]="UserIcon" class="w-5 h-5 mr-2"></lucide-angular>
-              <span class="hidden sm:inline">Perfil</span>
-            </app-button>
 
-            <app-button
-              variant="ghost"
-              size="sm"
-              (btnClick)="handleLogout()"
-              title="Sair"
-            >
-              <lucide-angular [img]="LogOutIcon" class="w-5 h-5 mr-2"></lucide-angular>
-              <span class="hidden sm:inline">Sair</span>
-            </app-button>
+          <div class="flex items-center space-x-4">
+            <div class="flex flex-col items-end mr-2">
+              <span class="text-sm font-bold text-gray-900">{{ authService.user()?.name || 'Usuário' }}</span>
+              <span class="text-xs text-gray-500">{{ authService.user()?.email }}</span>
+            </div>
+            <div class="w-10 h-10 bg-linear-to-tr from-indigo-600 to-violet-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-200 ring-2 ring-white">
+              {{ (authService.user()?.name?.[0] || authService.user()?.email?.[0] || 'U').toUpperCase() }}
+            </div>
           </div>
         </header>
 
@@ -99,23 +107,19 @@ import { ToastContainerComponent } from '../components/toast-container.component
 })
 export class AdminLayoutComponent {
   authService = inject(AuthService);
-  menuService = inject(MenuService);
+  confirmService = inject(ConfirmService);
   private router = inject(Router);
 
-  readonly LogOutIcon = LogOut;
   readonly LogoIcon = CheckCircle;
-  readonly UserIcon = UserIcon;
+  readonly LogoutIcon = LogOut;
 
-  navItems = [
-    { name: 'Minhas Tarefas', path: '/tasks', icon: ListTodo },
+  menuItems = [
+    { label: 'Dashboard', path: '/dashboard', icon: ListTodo },
+    { label: 'Minhas Tarefas', path: '/tasks', icon: ListTodo },
+    { label: 'Meu Perfil', path: '/profile', icon: UserIcon },
   ];
 
-  goToProfile() {
-    this.router.navigate(['/profile/change-password']);
-  }
-
-  handleLogout() {
+  logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

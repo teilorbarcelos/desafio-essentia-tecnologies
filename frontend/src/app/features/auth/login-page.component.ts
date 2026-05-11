@@ -104,16 +104,12 @@ export class LoginPageComponent {
     this.errorMessage.set(null);
 
     try {
-      console.log('[LoginPage] Attempting login...');
       const response: LoginResponse = await firstValueFrom(
         this.http.post<LoginResponse>('/v1/auth/login', this.loginForm.value)
       );
-      console.log('[LoginPage] Login successful, updating service...');
       this.authService.login(response.token, response.refreshToken, response.user);
-      console.log('[LoginPage] Navigating to dashboard...');
       await this.router.navigate(['/dashboard']);
     } catch (error) {
-      console.error('[LoginPage] Login error:', error);
       if (error instanceof HttpErrorResponse) {
         if (error.status === 0 || !error.status) {
           this.errorMessage.set('O servidor está offline. Tente novamente mais tarde.');

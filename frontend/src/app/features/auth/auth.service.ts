@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, filter, firstValueFrom, Observable, take, throwError, finalize } from 'rxjs';
+import { BehaviorSubject, filter, finalize, firstValueFrom, Observable, take, throwError } from 'rxjs';
 
 export interface User {
   id: string;
@@ -65,8 +65,6 @@ export class AuthService {
       this.setSession(token, localStorage.getItem('refreshToken') || '', res);
     } catch (err: any) {
       console.warn('[AuthService] checkAuth /me failed, status:', err.status);
-      // Se falhar o /me por 401, o interceptor já deve ter tentado o refresh.
-      // Se cair aqui e continuar sem user, deslogamos.
       if (!this.userState()) {
         this.logout();
       }
@@ -77,20 +75,17 @@ export class AuthService {
 
   handleRefreshToken(): Observable<string> {
     if (this.isRefreshing) {
-      console.log('[AuthService] Refresh already in progress, waiting...');
       return this.refreshTokenSubject.pipe(
         filter(token => token !== null),
         take(1)
       ) as Observable<string>;
     }
 
-    console.log('[AuthService] Starting refresh token request...');
     this.isRefreshing = true;
     this.refreshTokenSubject.next(null);
 
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
-      console.error('[AuthService] No refresh token found in storage!');
       this.logout();
       return throwError(() => new Error('No refresh token available'));
     }
@@ -102,14 +97,12 @@ export class AuthService {
         })
       ).subscribe({
         next: (res) => {
-          console.log('[AuthService] Refresh success! Updating session.');
           this.setSession(res.token, res.refreshToken, res.user);
           this.refreshTokenSubject.next(res.token);
           observer.next(res.token);
           observer.complete();
         },
         error: (err) => {
-          console.error('[AuthService] Refresh request failed:', err);
           this.logout();
           observer.error(err);
         }
@@ -130,7 +123,6 @@ export class AuthService {
   }
 
   logout() {
-    console.log('[AuthService] Logging out and clearing storage.');
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');

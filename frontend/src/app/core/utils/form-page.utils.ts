@@ -1,7 +1,7 @@
 import { inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { firstValueFrom, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 
 export interface FormPageConfig<T, D = unknown> {
@@ -113,7 +113,6 @@ export function createFormPageController<T, D = unknown>(config: FormPageConfig<
       }
       router.navigate([config.baseRoute]);
     } catch (error) {
-      console.error(`Error saving ${config.feature}`, error);
       toastService.error(
         config.messages?.saveError || `Ocorreu um erro ao salvar o ${config.feature}.`,
       );

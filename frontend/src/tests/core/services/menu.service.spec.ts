@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { MenuService } from './menu.service';
+import { MenuService } from '../../../app/core/services/menu.service';
 import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('MenuService', () => {

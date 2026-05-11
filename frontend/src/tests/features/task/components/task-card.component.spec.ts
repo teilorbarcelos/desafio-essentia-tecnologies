@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaskCardComponent } from './task-card.component';
-import { Task } from '../task.service';
+import { TaskCardComponent } from '../../../../app/features/task/components/task-card.component';
+import { Task } from '../../../../app/features/task/task.service';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 import { By } from '@angular/platform-browser';
 

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ToastService } from './toast.service';
+import { ToastService, Toast } from '../../../app/core/services/toast.service';
 import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
 
 describe('ToastService', () => {
@@ -63,8 +63,8 @@ describe('ToastService', () => {
     
     service.remove(id1);
     
-    expect(service.toasts().find(t => t.id === id1)?.isClosing).toBe(true);
-    expect(service.toasts().find(t => t.id === id2)?.isClosing).toBe(false);
+    expect(service.toasts().find((t: Toast) => t.id === id1)?.isClosing).toBe(true);
+    expect(service.toasts().find((t: Toast) => t.id === id2)?.isClosing).toBe(false);
   });
 
   it('should not auto-remove if duration is 0', () => {

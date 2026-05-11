@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ConfirmService } from './confirm.service';
+import { ConfirmService } from '../../../app/core/services/confirm.service';
 import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('ConfirmService', () => {

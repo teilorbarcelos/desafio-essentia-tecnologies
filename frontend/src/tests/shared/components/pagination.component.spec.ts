@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaginationComponent } from './pagination.component';
-import { vi, describe, beforeEach, it, expect } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { PaginationComponent } from '../../../app/shared/components/pagination.component';
 
 describe('PaginationComponent', () => {
   let component: PaginationComponent;

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ConfirmModalComponent } from './confirm-modal.component';
 import { By } from '@angular/platform-browser';
-import { vi, describe, beforeEach, it, expect } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ConfirmModalComponent } from '../../../app/shared/components/confirm-modal.component';
 
 describe('ConfirmModalComponent', () => {
   let component: ConfirmModalComponent;

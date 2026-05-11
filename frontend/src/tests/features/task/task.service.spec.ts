@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { TaskService, Task, ListResponse, CreateTaskDTO } from './task.service';
+import { TaskService, Task, ListResponse, CreateTaskDTO } from '../../../app/features/task/task.service';
 import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('TaskService', () => {

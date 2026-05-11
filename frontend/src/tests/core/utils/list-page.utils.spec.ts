@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { ToastService } from '../services/toast.service';
-import { createListPageController, ListPageConfig } from './list-page.utils';
+import { ToastService } from '../../../app/core/services/toast.service';
+import { createListPageController, ListPageConfig } from '../../../app/core/utils/list-page.utils';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 
 describe('ListPageUtils', () => {

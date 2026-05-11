@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ButtonComponent } from './button.component';
-import { vi, describe, beforeEach, it, expect } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ButtonComponent } from '../../../app/shared/components/button.component';
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent;

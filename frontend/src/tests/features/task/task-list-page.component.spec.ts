@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaskListPageComponent } from './task-list-page.component';
-import { Task, TaskService } from './task.service';
-import { MenuService } from '../../core/services/menu.service';
-import { ConfirmService } from '../../core/services/confirm.service';
-import { ToastService } from '../../core/services/toast.service';
+import { TaskListPageComponent } from '../../../app/features/task/task-list-page.component';
+import { Task, TaskService } from '../../../app/features/task/task.service';
+import { MenuService } from '../../../app/core/services/menu.service';
+import { ConfirmService } from '../../../app/core/services/confirm.service';
+import { ToastService } from '../../../app/core/services/toast.service';
 import { of } from 'rxjs';
 import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaginationComponent } from '../../shared/components/pagination.component';
+import { PaginationComponent } from '../../../app/shared/components/pagination.component';
 import { By } from '@angular/platform-browser';
 
 describe('TaskListPageComponent', () => {

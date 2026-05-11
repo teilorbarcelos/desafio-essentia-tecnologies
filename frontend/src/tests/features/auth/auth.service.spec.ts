@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { AuthService, User } from './auth.service';
+import { AuthService, User } from '../../../app/features/auth/auth.service';
 import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('AuthService', () => {

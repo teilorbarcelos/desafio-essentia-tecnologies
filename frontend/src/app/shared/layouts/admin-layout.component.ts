@@ -40,7 +40,6 @@ import { ToastContainerComponent } from '../components/toast-container.component
         (cancel)="confirmService.handleCancel()"
       ></app-confirm-modal>
       
-      <!-- Sidebar -->
       <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm shrink-0 z-20">
         <div class="h-16 flex items-center px-6 border-b border-gray-200 shrink-0">
           <div class="flex items-center space-x-2 text-indigo-600">
@@ -63,9 +62,7 @@ import { ToastContainerComponent } from '../components/toast-container.component
         </nav>
       </aside>
 
-      <!-- Main Content -->
       <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative">
-        <!-- Header -->
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
           <div class="flex items-center space-x-2 text-indigo-600">
             <lucide-angular [img]="LogoIcon" class="w-6 h-6"></lucide-angular>
@@ -73,7 +70,6 @@ import { ToastContainerComponent } from '../components/toast-container.component
           </div>
 
           <div class="flex items-center space-x-6">
-            <!-- User Info -->
             <div class="flex items-center space-x-3">
               <div class="flex flex-col items-end">
                 <span class="text-sm font-bold text-gray-900">{{ authService.user()?.name || 'Usuário' }}</span>
@@ -86,7 +82,6 @@ import { ToastContainerComponent } from '../components/toast-container.component
 
             <div class="h-6 w-px bg-gray-200"></div>
 
-            <!-- Actions -->
             <div class="flex items-center space-x-1">
               <a 
                 routerLink="/profile/change-password"

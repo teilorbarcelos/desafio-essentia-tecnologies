@@ -7,13 +7,13 @@ import { ButtonComponent } from './button.component';
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="flex items-center justify-between shrink-0 max-w-2xl mx-auto w-full pb-2">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between shrink-0 max-w-2xl mx-auto w-full pb-4 gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
-        <p class="text-sm text-gray-500 mt-1">{{ description }}</p>
+        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">{{ title }}</h1>
+        <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ description }}</p>
       </div>
       @if (buttonLabel) {
-        <app-button variant="primary" size="sm" (btnClick)="buttonClick.emit()">
+        <app-button variant="primary" size="sm" (btnClick)="buttonClick.emit()" class="w-full sm:w-auto">
           {{ buttonLabel }}
         </app-button>
       }

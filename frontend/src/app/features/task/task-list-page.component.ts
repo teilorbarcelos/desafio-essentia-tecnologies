@@ -36,7 +36,7 @@ import { Task, TaskService } from './task.service';
         (buttonClick)="navigateToCreate()"
       ></app-page-header>
       
-      <div class="flex-1 px-8 overflow-y-auto overlay-scrollbar">
+      <div class="flex-1 px-4 lg:px-8 overflow-y-auto overlay-scrollbar">
         <div class="max-w-2xl mx-auto w-full py-4 space-y-8">
           <div class="relative min-h-[400px]">
             @if (isLoading()) {

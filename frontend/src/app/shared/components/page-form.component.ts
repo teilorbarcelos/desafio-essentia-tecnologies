@@ -7,19 +7,19 @@ import { ButtonComponent } from './button.component';
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="max-w-2xl mx-auto py-8 overlay-scrollbar animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="max-w-2xl mx-auto py-4 sm:py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+        <div class="p-5 sm:p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">{{ title }}</h1>
-            <p class="text-sm text-gray-500 mt-1">{{ description }}</p>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">{{ title }}</h1>
+            <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ description }}</p>
           </div>
-          <app-button variant="ghost" size="sm" (btnClick)="cancel.emit()" [disabled]="isSubmitting">
+          <app-button variant="ghost" size="sm" (btnClick)="cancel.emit()" [disabled]="isSubmitting" class="hidden sm:block">
             {{ cancelLabel }}
           </app-button>
         </div>
 
-        <div class="p-8 relative">
+        <div class="p-5 sm:p-8 relative">
           @if (isLoading) {
             <div class="py-20 flex flex-col items-center justify-center">
               <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>

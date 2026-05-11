@@ -114,4 +114,71 @@ describe('ListPageUtils', () => {
       expect(toastMock.error).toHaveBeenCalledWith('Erro ao excluir o test.');
     });
   });
+
+  it('should handle loadItems failure', async () => {
+    const errorConfig: ListPageConfig<any> = {
+      ...mockConfig,
+      fetch: async () => { throw new Error('Load error'); }
+    };
+
+    await TestBed.runInInjectionContext(async () => {
+      const controller = createListPageController(errorConfig);
+      await controller.loadItems();
+      
+      expect(toastMock.error).toHaveBeenCalledWith('Erro ao carregar a listagem de tests.');
+    });
+  });
+
+  it('should use custom loadError message', async () => {
+    const customConfig: ListPageConfig<any> = {
+      ...mockConfig,
+      fetch: async () => { throw new Error('Load error'); },
+      messages: { loadError: 'Custom load error' }
+    };
+
+    await TestBed.runInInjectionContext(async () => {
+      const controller = createListPageController(customConfig);
+      await controller.loadItems();
+      
+      expect(toastMock.error).toHaveBeenCalledWith('Custom load error');
+    });
+  });
+
+  it('should return early in deleteItem if delete function is not provided', async () => {
+    const noDeleteConfig: ListPageConfig<any> = {
+      feature: 'test',
+      baseRoute: '/test',
+      fetch: async () => ({ items: [], total: 0 })
+    };
+
+    await TestBed.runInInjectionContext(async () => {
+      const controller = createListPageController(noDeleteConfig);
+      await controller.deleteItem('1');
+      
+      expect(toastMock.success).not.toHaveBeenCalled();
+      expect(toastMock.error).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should use custom delete success and error messages', async () => {
+    const customMessagesConfig: ListPageConfig<any> = {
+      ...mockConfig,
+      messages: {
+        deleteSuccess: 'Custom success',
+        deleteError: 'Custom error'
+      }
+    };
+
+    await TestBed.runInInjectionContext(async () => {
+      const controller = createListPageController(customMessagesConfig);
+      
+      // Success
+      await controller.deleteItem('1');
+      expect(toastMock.success).toHaveBeenCalledWith('Custom success');
+
+      // Error
+      await controller.deleteItem('error');
+      expect(toastMock.error).toHaveBeenCalledWith('Custom error');
+    });
+  });
 });

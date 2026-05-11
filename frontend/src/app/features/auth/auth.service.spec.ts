@@ -37,6 +37,41 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should hydrate user from localStorage on init', () => {
+    localStorage.setItem('user', JSON.stringify(mockUser));
+    localStorage.setItem('token', 'some-token');
+    
+    // Re-inject to trigger constructor
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        AuthService,
+        { provide: Router, useValue: routerMock }
+      ]
+    });
+    const newService = TestBed.inject(AuthService);
+    expect(newService.user()).toEqual(mockUser);
+  });
+
+  it('should logout on hydrate if localStorage is corrupted', () => {
+    localStorage.setItem('user', 'invalid-json');
+    localStorage.setItem('token', 'some-token');
+    
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        AuthService,
+        { provide: Router, useValue: routerMock }
+      ]
+    });
+    
+    const newService = TestBed.inject(AuthService);
+    expect(newService.user()).toBeNull();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
   it('should login correctly and save to localStorage', () => {
     service.login('atoken', 'rtoken', mockUser);
     
@@ -67,6 +102,37 @@ describe('AuthService', () => {
     req.flush(mockUser);
     
     await checkPromise;
+    expect(service.user()).toEqual(mockUser);
+  });
+
+  it('should logout if no token in checkAuth', async () => {
+    const logoutSpy = vi.spyOn(service, 'logout');
+    await service.checkAuth();
+    expect(logoutSpy).toHaveBeenCalled();
+  });
+
+  it('should logout if checkAuth fails and no user is set', async () => {
+    localStorage.setItem('token', 'atoken');
+    const logoutSpy = vi.spyOn(service, 'logout');
+    
+    const checkPromise = service.checkAuth();
+    const req = httpMock.expectOne('/v1/auth/me');
+    req.error(new ProgressEvent('error'), { status: 401 });
+    
+    await checkPromise;
+    expect(logoutSpy).toHaveBeenCalled();
+  });
+
+  it('should NOT logout if checkAuth fails but user is already set', async () => {
+    service.login('atoken', 'rtoken', mockUser);
+    const logoutSpy = vi.spyOn(service, 'logout');
+    
+    const checkPromise = service.checkAuth();
+    const req = httpMock.expectOne('/v1/auth/me');
+    req.error(new ProgressEvent('error'), { status: 500 });
+    
+    await checkPromise;
+    expect(logoutSpy).not.toHaveBeenCalled();
     expect(service.user()).toEqual(mockUser);
   });
 
@@ -105,6 +171,40 @@ describe('AuthService', () => {
       
       const req = httpMock.expectOne('/v1/auth/refresh');
       req.error(new ProgressEvent('error'), { status: 401 });
+    });
+  });
+
+  it('should handle concurrent refresh token calls', () => {
+    localStorage.setItem('refreshToken', 'old_rtoken');
+    
+    let calls = 0;
+    service.handleRefreshToken().subscribe(token => {
+      expect(token).toBe('new_atoken');
+      calls++;
+    });
+    
+    service.handleRefreshToken().subscribe(token => {
+      expect(token).toBe('new_atoken');
+      calls++;
+    });
+    
+    const req = httpMock.expectOne('/v1/auth/refresh');
+    req.flush({
+      token: 'new_atoken',
+      refreshToken: 'new_rtoken',
+      user: mockUser
+    });
+    
+    expect(calls).toBe(2);
+  });
+
+  it('should throw error if no refresh token available', () => {
+    const logoutSpy = vi.spyOn(service, 'logout');
+    service.handleRefreshToken().subscribe({
+      error: (err) => {
+        expect(err.message).toBe('No refresh token available');
+        expect(logoutSpy).toHaveBeenCalled();
+      }
     });
   });
 });

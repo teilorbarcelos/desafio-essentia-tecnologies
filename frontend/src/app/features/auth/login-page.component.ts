@@ -108,7 +108,7 @@ export class LoginPageComponent {
         this.http.post<LoginResponse>('/v1/auth/login', this.loginForm.value)
       );
       this.authService.login(response.token, response.refreshToken, response.user);
-      await this.router.navigate(['/dashboard']);
+      await this.router.navigate(['/tasks']);
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
         if (error.status === 0 || !error.status) {

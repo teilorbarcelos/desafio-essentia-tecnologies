@@ -22,7 +22,8 @@ import {
   ChevronLeft,
   Trash2,
   Pencil,
-  Check
+  Check,
+  KeyRound
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -66,7 +67,8 @@ export const appConfig: ApplicationConfig = {
         ChevronLeft,
         Trash2,
         Pencil,
-        Check
+        Check,
+        KeyRound
       })
     },
   ]

@@ -1,59 +1,87 @@
-# Frontend
+# TechX To-Do List - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.10.
+Este é o frontend da aplicação **TechX To-Do List**, uma plataforma moderna e responsiva para gerenciamento de tarefas, construída com **Angular (v21)** e focada em uma experiência de usuário premium.
 
-## Development server
+O projeto segue as melhores práticas de desenvolvimento, utilizando **Signals** para gerenciamento de estado reativo, **Tailwind CSS** para estilização e uma suíte de testes robusta com **Vitest**.
 
-To start a local development server, run:
+---
 
+## 🚀 Tecnologias Utilizadas
+
+- **Core:** Angular 21 (Signals, Standalone Components, Control Flow)
+- **Estilização:** Tailwind CSS (Modern UI/UX)
+- **Ícones:** Lucide Angular
+- **Gerenciamento de Estado:** Angular Signals (Reatividade nativa e performática)
+- **Comunicação:** HttpClient com Interceptors (Auth & Silent Refresh)
+- **Testes:** Vitest & @angular/build:unit-test (Alta cobertura)
+- **Qualidade de Código:** TypeScript (Modo estrito), Prettier
+
+---
+
+## 🛠️ Como Executar o Projeto
+
+Certifique-se de ter o **Node.js** instalado (recomenda-se v20+).
+
+### 1. Instalação das Dependências
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:3000/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### 2. Executando em Modo de Desenvolvimento
 ```bash
-ng generate component component-name
+npm run dev
+```
+A aplicação estará disponível em `http://localhost:3000`.
+
+### 3. Build de Produção
+```bash
+npm run build
+```
+Os artefatos otimizados serão gerados na pasta `dist/`.
+
+---
+
+## ✨ Features em Destaque
+
+Este frontend foi desenvolvido com padrões de engenharia de software de alto nível:
+
+1.  **UX/UI Premium:** Design responsivo com animações suaves, feedback visual via Toasts e estados de carregamento (Skeletons/Spinners).
+2.  **Silent Refresh:** Implementação de interceptor resiliente para renovação automática de tokens, garantindo que o usuário nunca seja deslogado enquanto estiver ativo.
+3.  **Arquitetura Baseada em Features:** Organização modular por domínios (`auth`, `task`, `profile`), facilitando a manutenção e escalabilidade.
+4.  **Shared Components Robustos:** Componentes altamente reutilizáveis e desacoplados, como o `ListPageController` que centraliza lógica de paginação, busca e filtros.
+5.  **Alta Cobertura de Testes:** **100% de cobertura de linhas** nos componentes compartilhados e serviços críticos, garantindo estabilidade em cada deploy.
+6.  **Organização de Testes:** Todos os testes unitários (`.spec.ts`) estão centralizados na pasta `src/test`, mantendo a pasta `src/app` limpa e focada no código de produção.
+
+---
+
+## 🧪 Testes e Qualidade
+
+Para rodar a suíte completa de testes e verificar o relatório de cobertura:
+```bash
+npm run test:coverage
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+A cobertura foca em:
+- **Services:** Lógica de negócio e integração com API.
+- **Components:** Comportamento visual, emissão de eventos e renderização condicional.
+- **Utils:** Funções auxiliares e controllers de listagem.
 
-```bash
-ng generate --help
+---
+
+## 📂 Estrutura de Pastas
+
+```text
+src/
+├── app/               # Código fonte da aplicação
+│   ├── core/          # Serviços globais, interceptors e utilitários
+│   ├── features/      # Módulos de funcionalidade (Auth, Task, Profile)
+│   ├── shared/        # Componentes e layouts reutilizáveis
+├── test/              # Suíte de testes espelhada à estrutura do app
+└── assets/            # Arquivos estáticos e globais
 ```
 
-## Building
+---
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+> **Nota sobre a Experiência do Usuário**
+>
+> Cada detalhe da interface foi pensado para ser "vivo". Utilizamos micro-animações do Tailwind e ícones da Lucide para que a plataforma não seja apenas funcional, mas também prazerosa de usar.

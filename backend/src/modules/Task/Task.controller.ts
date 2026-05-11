@@ -24,8 +24,12 @@ export class TaskController {
     const { id } = request.params;
     const data = request.body;
 
-    const task = await TaskService.updateTask(id, userId, data);
-    return reply.status(200).send(task);
+    try {
+      const task = await TaskService.updateTask(id, userId, data);
+      return reply.status(200).send(task);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async deleteTask(request: FastifyRequest<{ Params: TaskParamsDTO }>, reply: FastifyReply) {
@@ -34,5 +38,17 @@ export class TaskController {
 
     await TaskService.deleteTask(id, userId);
     return reply.status(204).send();
+  }
+
+  async getTaskById(request: FastifyRequest<{ Params: TaskParamsDTO }>, reply: FastifyReply) {
+    const { id: userId } = request.user as AuthPayload;
+    const { id } = request.params;
+
+    try {
+      const task = await TaskService.getTaskById(id, userId);
+      return reply.status(200).send(task);
+    } catch (error) {
+      throw error;
+    }
   }
 }

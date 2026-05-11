@@ -1,0 +1,32 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+@layer utilities {
+  .overlay-scrollbar {
+    overflow-y: auto;
+  }
+  
+  /* Chrome, Safari, Edge */
+  .overlay-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .overlay-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .overlay-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .overlay-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  /* Firefox */
+  .overlay-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  }
+}

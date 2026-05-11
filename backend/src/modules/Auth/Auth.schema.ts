@@ -23,6 +23,11 @@ export type ChangePasswordDTO = Static<typeof ChangePasswordSchema>;
 export const AuthResponseSchema = Type.Object({
   token: Type.String(),
   refreshToken: Type.String(),
+  user: Type.Object({
+    id: Type.String({ format: 'uuid' }),
+    email: Type.String({ format: 'email' }),
+    name: Type.Optional(Type.String()),
+  })
 }, { $id: 'AuthResponse' });
 
 export const UserMeResponseSchema = Type.Object({

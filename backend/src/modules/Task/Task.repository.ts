@@ -28,7 +28,10 @@ export const TaskRepository = {
     const [items, total] = await Promise.all([
       prisma.task.findMany({
         where: { userId },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [
+          { completed: 'asc' },
+          { createdAt: 'desc' }
+        ],
         skip,
         take: safeLimit
       }),

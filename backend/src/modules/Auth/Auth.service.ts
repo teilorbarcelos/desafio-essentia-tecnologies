@@ -67,7 +67,14 @@ export class AuthService {
       await SessionManager.invalidateRefreshSession(user.id, refreshToken);
       await SessionManager.createSession(user.id, tokens.token, tokens.refreshToken, newPayload);
 
-      return tokens;
+      return {
+        ...tokens,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        }
+      };
     } catch (err) {
       if (err instanceof AppError) throw err;
       throw new AuthenticationError('Unauthorized');

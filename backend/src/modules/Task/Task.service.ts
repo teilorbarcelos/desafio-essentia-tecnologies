@@ -24,5 +24,13 @@ export const TaskService = {
     } catch (err) {
       throw new NotFoundError('Task not found or unauthorized');
     }
+  },
+
+  async getTaskById(id: string, userId: string) {
+    const task = await TaskRepository.findById(id);
+    if (!task || task.userId !== userId) {
+      throw new NotFoundError('Task not found or unauthorized');
+    }
+    return task;
   }
 };

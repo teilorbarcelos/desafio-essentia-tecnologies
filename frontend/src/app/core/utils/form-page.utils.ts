@@ -1,0 +1,140 @@
+import { inject, signal } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ToastService } from '../services/toast.service';
+
+export interface FormPageConfig<T, D = unknown> {
+  feature: string;
+  baseRoute: string;
+  form: FormGroup;
+  fetch?: (id: string) => Promise<T>;
+  create: (data: D) => Promise<unknown>;
+  update: (id: string, data: D) => Promise<unknown>;
+  onLoadSuccess?: (data: T) => void;
+  onBeforeSave?: (data: unknown) => D | null | undefined;
+  messages?: {
+    createSuccess?: string;
+    updateSuccess?: string;
+    loadError?: string;
+    saveError?: string;
+  };
+}
+
+export function createFormPageController<T, D = unknown>(config: FormPageConfig<T, D>) {
+  const router = inject(Router);
+  const route = inject(ActivatedRoute);
+  const toastService = inject(ToastService);
+
+  const id = signal<string | null>(null);
+  const isEditing = signal(false);
+  const isLoading = signal(false);
+  const isPending = signal(false);
+
+  let routeSub: Subscription | null = null;
+
+  function init() {
+    routeSub = route.params.subscribe((params) => {
+      const routeId = params['id'];
+      if (routeId && routeId !== 'new') {
+        id.set(routeId);
+        isEditing.set(true);
+        loadData(routeId);
+      }
+    });
+  }
+
+  function destroy() {
+    routeSub?.unsubscribe();
+  }
+
+  async function loadData(dataId: string) {
+    if (!config.fetch) return;
+    isLoading.set(true);
+    try {
+      const data = await config.fetch(dataId);
+      if (config.onLoadSuccess) {
+        config.onLoadSuccess(data);
+      } else {
+        config.form.patchValue(data as Record<string, unknown>);
+      }
+    } catch (error) {
+      console.error(`Error loading ${config.feature}`, error);
+      toastService.error(
+        config.messages?.loadError || `Erro ao carregar os dados do ${config.feature}.`,
+      );
+      router.navigate([config.baseRoute]);
+    } finally {
+      isLoading.set(false);
+    }
+  }
+
+  function getError(field: string): string | null {
+    const control = config.form.get(field);
+    if (control && control.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Este campo é obrigatório';
+      if (control.errors?.['email']) return 'Email inválido';
+      if (control.errors?.['min']) return 'Valor inválido';
+      if (control.errors?.['minLength']) return `Mínimo de ${control.errors?.['minLength'].requiredLength} caracteres`;
+    }
+    return null;
+  }
+
+  async function onSubmit() {
+    if (config.form.invalid) {
+      config.form.markAllAsTouched();
+      return;
+    }
+
+    let data = config.form.value;
+
+    if (config.onBeforeSave) {
+      const transformed = config.onBeforeSave(data);
+      if (transformed === null || transformed === undefined) {
+        return;
+      }
+      data = transformed;
+    }
+
+    isPending.set(true);
+    try {
+      if (isEditing()) {
+        await config.update(id()!, data);
+        toastService.success(
+          config.messages?.updateSuccess ||
+            `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} atualizado com sucesso!`,
+        );
+      } else {
+        await config.create(data);
+        toastService.success(
+          config.messages?.createSuccess ||
+            `${config.feature.charAt(0).toUpperCase() + config.feature.slice(1)} cadastrado com sucesso!`,
+        );
+      }
+      router.navigate([config.baseRoute]);
+    } catch (error) {
+      toastService.error(
+        config.messages?.saveError || `Ocorreu um erro ao salvar o ${config.feature}.`,
+      );
+    } finally {
+      isPending.set(false);
+    }
+  }
+
+  function cancel() {
+    router.navigate([config.baseRoute]);
+  }
+
+  return {
+    id,
+    isEditing,
+    isLoading,
+    isPending,
+    init,
+    destroy,
+    getError,
+    onSubmit,
+    cancel,
+    loadData,
+  };
+}

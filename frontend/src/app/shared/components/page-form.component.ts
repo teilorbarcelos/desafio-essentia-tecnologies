@@ -7,7 +7,7 @@ import { ButtonComponent } from './button.component';
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="max-w-2xl mx-auto py-8 px-8 overlay-scrollbar animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="max-w-2xl mx-auto py-8 overlay-scrollbar animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
           <div>

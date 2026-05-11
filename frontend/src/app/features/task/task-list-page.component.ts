@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ListTodo, LucideAngularModule } from 'lucide-angular';
+import { ConfirmService } from '../../core/services/confirm.service';
 import { MenuService } from '../../core/services/menu.service';
 import { ToastService } from '../../core/services/toast.service';
-import { ConfirmService } from '../../core/services/confirm.service';
 import { createListPageController } from '../../core/utils/list-page.utils';
 import { EmptyStateComponent } from '../../shared/components/empty-state.component';
 import { PageHeaderComponent } from '../../shared/components/page-header.component';
@@ -36,7 +36,7 @@ import { Task, TaskService } from './task.service';
         (buttonClick)="navigateToCreate()"
       ></app-page-header>
       
-      <div class="flex-1 px-4 lg:px-8 overflow-y-auto overlay-scrollbar">
+      <div class="flex-1 overflow-y-auto overlay-scrollbar">
         <div class="max-w-2xl mx-auto w-full py-4 space-y-8">
           <div class="relative min-h-[400px]">
             @if (isLoading()) {
@@ -66,6 +66,7 @@ import { Task, TaskService } from './task.service';
                   [pageSize]="size()"
                   [currentPage]="page()"
                   (pageChange)="handlePageChange($event)"
+                  (pageSizeChange)="handlePageSizeChange($event)"
                 ></app-pagination>
               </div>
             }
@@ -106,6 +107,10 @@ export class TaskListPageComponent implements OnInit {
     if (scrollContainer) {
       scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  }
+
+  handlePageSizeChange(size: number) {
+    this.list.handlePageSizeChange(size);
   }
 
   navigateToCreate() {

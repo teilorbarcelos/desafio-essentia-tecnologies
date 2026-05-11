@@ -25,7 +25,7 @@ import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
         </button>
       </div>
       <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div>
+        <div class="flex items-center space-x-6">
           <p class="text-sm text-gray-700">
             Mostrando
             <span class="font-medium">{{ startItem }}</span>
@@ -35,6 +35,19 @@ import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
             <span class="font-medium">{{ totalItems }}</span>
             resultados
           </p>
+
+          <div class="flex items-center space-x-2 border-l border-gray-200 pl-6">
+            <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Linhas:</span>
+            <select
+              [value]="pageSize"
+              (change)="handlePageSizeChange($event)"
+              class="bg-white border border-gray-300 rounded-lg text-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer hover:border-gray-400"
+            >
+              @for (size of pageSizeOptions; track size) {
+                <option [value]="size" [selected]="size === pageSize">{{ size }}</option>
+              }
+            </select>
+          </div>
         </div>
         <div>
           <nav class="relative z-0 inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
@@ -79,7 +92,9 @@ export class PaginationComponent {
   @Input() totalItems = 0;
   @Input() pageSize = 10;
   @Input() currentPage = 1;
+  @Input() pageSizeOptions = [10, 25, 50, 100];
   @Output() pageChange = new EventEmitter<number>();
+  @Output() pageSizeChange = new EventEmitter<number>();
 
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
@@ -119,5 +134,10 @@ export class PaginationComponent {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.pageChange.emit(page);
     }
+  }
+
+  handlePageSizeChange(event: Event) {
+    const size = parseInt((event.target as HTMLSelectElement).value, 10);
+    this.pageSizeChange.emit(size);
   }
 }

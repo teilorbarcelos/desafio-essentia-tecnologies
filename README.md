@@ -62,19 +62,25 @@ make dev
 | `make setup` | Instala dependências em ambos os projetos (`npm install`) |
 | `make infra` | Sobe a infraestrutura de bancos (Docker Compose) |
 | `make dev` | Executa backend e frontend em modo de desenvolvimento |
-| `make test` | Executa todos os testes (Backend e Frontend) |
+| `make test` | Executa todos os testes (Sem modo watch) |
+| `make coverage` | Executa os testes e gera relatórios de cobertura |
 | `make stop` | Para todos os serviços e bancos |
-| `make clean` | Remove containers, volumes e limpa caches do ambiente |
+| `make infra-clean` | Remove containers, volumes e imagens de infra do Docker |
+| `make clean` | Limpeza completa (Docker + dist + node_modules) |
 
 ---
 
 ## 🧪 Qualidade e Testes
 
-Ambos os projetos possuem suítes de testes rigorosas. Você pode rodar todos os testes do monorepo com:
+Ambos os projetos possuem suítes de testes rigorosas. Você pode rodar todos os testes do monorepo e gerar os relatórios de cobertura com:
+```bash
+make coverage
+```
+
+Ou rodar apenas os testes (sem relatório de cobertura):
 ```bash
 make test
 ```
-Ou individualmente entrando em cada pasta e rodando `npm run test:coverage`.
 
 ---
 

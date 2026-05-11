@@ -63,12 +63,7 @@ import { ToastContainerComponent } from '../components/toast-container.component
       </aside>
 
       <main class="flex-1 flex flex-col min-w-0 bg-gray-50 relative">
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0 shadow-sm z-10">
-          <div class="flex items-center space-x-2 text-indigo-600">
-            <lucide-angular [img]="LogoIcon" class="w-6 h-6"></lucide-angular>
-            <span class="text-sm font-semibold tracking-wide uppercase text-gray-400">TechX Platform</span>
-          </div>
-
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-end px-8 shrink-0 shadow-sm z-10">
           <div class="flex items-center space-x-6">
             <div class="flex items-center space-x-3">
               <div class="flex flex-col items-end">

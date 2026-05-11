@@ -99,4 +99,20 @@ describe('PaginationComponent', () => {
     component.handlePageSizeChange(event);
     expect(spy).toHaveBeenCalledWith(25);
   });
+
+  it('should call onPageChange when a page button is clicked', () => {
+    fixture.componentRef.setInput('totalItems', 50);
+    fixture.componentRef.setInput('pageSize', 10);
+    fixture.componentRef.setInput('currentPage', 1);
+    fixture.detectChanges();
+
+    const spy = vi.spyOn(component, 'onPageChange');
+    const buttons = fixture.nativeElement.querySelectorAll('nav button');
+    // Index mapping in template:
+    // 0: Previous
+    // 1-5: Pages (1, 2, 3, 4, 5)
+    // 6: Next
+    buttons[2].click(); // Clicks on page 2 button
+    expect(spy).toHaveBeenCalledWith(2);
+  });
 });

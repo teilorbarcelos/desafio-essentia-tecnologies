@@ -83,9 +83,18 @@ describe('ConfirmModalComponent', () => {
     component.isOpen = true;
     component.variant = 'danger';
     fixture.detectChanges();
-    
     const iconContainer = fixture.debugElement.query(By.css('.shrink-0'));
     expect(iconContainer.nativeElement.classList.contains('bg-red-50')).toBeTruthy();
     expect(iconContainer.nativeElement.classList.contains('text-red-600')).toBeTruthy();
+  });
+
+  it('should apply correct classes for warning variant', () => {
+    component.isOpen = true;
+    component.variant = 'warning';
+    fixture.detectChanges();
+    
+    const iconContainer = fixture.debugElement.query(By.css('.shrink-0'));
+    expect(iconContainer.nativeElement.classList.contains('bg-amber-50')).toBeTruthy();
+    expect(iconContainer.nativeElement.classList.contains('text-amber-600')).toBeTruthy();
   });
 });

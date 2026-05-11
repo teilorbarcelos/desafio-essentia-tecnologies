@@ -155,4 +155,47 @@ describe('Task Functional Tests', () => {
       expect(res.statusCode).toBe(404);
     });
   });
+
+  describe('GET /tasks/:id', () => {
+    it('should return task if owner', async () => {
+      const headers = generateAuthHeaders();
+      const task = { 
+        id: '11111111-1111-1111-1111-111111111111', 
+        title: 'FindMe',
+        userId: '00000000-0000-0000-0000-000000000001',
+        completed: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      mockPrisma.task.findUnique.mockResolvedValue(task);
+
+      const res = await app.inject({ method: 'GET', url: '/v1/tasks/11111111-1111-1111-1111-111111111111', headers });
+      expect(res.statusCode).toBe(200);
+      expect(JSON.parse(res.body).title).toBe('FindMe');
+    });
+
+    it('should return 404 if not owner', async () => {
+      const headers = generateAuthHeaders('00000000-0000-0000-0000-000000000002');
+      const task = { 
+        id: '11111111-1111-1111-1111-111111111111', 
+        title: 'Private',
+        userId: '00000000-0000-0000-0000-000000000001',
+        completed: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      mockPrisma.task.findUnique.mockResolvedValue(task);
+
+      const res = await app.inject({ method: 'GET', url: '/v1/tasks/11111111-1111-1111-1111-111111111111', headers });
+      expect(res.statusCode).toBe(404);
+    });
+
+    it('should return 404 if not found', async () => {
+      const headers = generateAuthHeaders();
+      mockPrisma.task.findUnique.mockResolvedValue(null);
+
+      const res = await app.inject({ method: 'GET', url: '/v1/tasks/99999999-9999-9999-9999-999999999999', headers });
+      expect(res.statusCode).toBe(404);
+    });
+  });
 });

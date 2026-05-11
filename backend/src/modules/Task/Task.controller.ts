@@ -20,17 +20,14 @@ export class TaskController {
   }
 
   async updateTask(request: FastifyRequest<{ Params: TaskParamsDTO; Body: UpdateTaskDTO }>, reply: FastifyReply) {
-    console.log('[TaskController] updateTask started', { params: request.params, body: request.body });
     const { id: userId } = request.user as AuthPayload;
     const { id } = request.params;
     const data = request.body;
 
     try {
       const task = await TaskService.updateTask(id, userId, data);
-      console.log('[TaskController] updateTask success');
       return reply.status(200).send(task);
     } catch (error) {
-      console.error('[TaskController] updateTask error:', error);
       throw error;
     }
   }
@@ -44,16 +41,13 @@ export class TaskController {
   }
 
   async getTaskById(request: FastifyRequest<{ Params: TaskParamsDTO }>, reply: FastifyReply) {
-    console.log('[TaskController] getTaskById started', { params: request.params });
     const { id: userId } = request.user as AuthPayload;
     const { id } = request.params;
 
     try {
       const task = await TaskService.getTaskById(id, userId);
-      console.log('[TaskController] getTaskById success');
       return reply.status(200).send(task);
     } catch (error) {
-      console.error('[TaskController] getTaskById error:', error);
       throw error;
     }
   }
